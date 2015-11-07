@@ -15,6 +15,7 @@ hs_err_pid*
 /bin/
 .classpath
 .project
+.settings/
 
 #intellij stuff
 *.iml
