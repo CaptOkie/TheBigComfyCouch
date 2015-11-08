@@ -35,24 +35,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.java.openjfx.backport</groupId>
-            <artifactId>openjfx-78-backport</artifactId>
-            <version>1.8.0-ea-b96.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.openjfx.backport</groupId>
-            <artifactId>openjfx-78-backport-compat</artifactId>
-            <version>1.8.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.openjfx.backport</groupId>
-            <artifactId>openjfx-78-backport-native</artifactId>
-            <version>1.8.0-ea-b96.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.humble</groupId>
             <artifactId>humble-video-all</artifactId>
             <version>0.2.1</version>
@@ -65,8 +47,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
