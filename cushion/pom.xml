@@ -41,6 +41,18 @@
         </dependency>
 
         <dependency>
+            <groupId>net.java.openjfx.backport</groupId>
+            <artifactId>openjfx-78-backport-compat</artifactId>
+            <version>1.8.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.openjfx.backport</groupId>
+            <artifactId>openjfx-78-backport-native</artifactId>
+            <version>1.8.0-ea-b96.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.humble</groupId>
             <artifactId>humble-video-all</artifactId>
             <version>0.2.1</version>
