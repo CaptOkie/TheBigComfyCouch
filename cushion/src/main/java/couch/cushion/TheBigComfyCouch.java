@@ -4,11 +4,15 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 import couch.cushion.ui.HomeScene;
 import couch.cushion.video.VideoConverter;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -39,8 +43,7 @@ public class TheBigComfyCouch extends Application {
             if(file != null) {
                 try {
                     Path src = LIBRARY.resolve(file.getAbsolutePath());
-                    Path dst = LIBRARY.resolve(src.getFileName());
-                    
+                    Path dst = LIBRARY.resolve(com.google.common.io.Files.getNameWithoutExtension(src.getFileName().toString()) + ".mp4");
 //                    Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
                     
                     VideoConverter converter = new VideoConverter("MP4");
@@ -53,8 +56,15 @@ public class TheBigComfyCouch extends Application {
             }
         });
         
+//        VBox box = new VBox();
+//        MediaPlayer player = new MediaPlayer(new Media(Paths.get("/home/henri/couch-library/test.mp4").toUri().toURL().toString()));
+//        player.setAutoPlay(true);
+//        MediaView view = new MediaView(player);
+//        box.getChildren().add(view);
+        
         // Displaying the window
         primaryStage.setScene(home);
+//        primaryStage.setScene(new Scene(box, 640, 480));
         primaryStage.show();
     }
 }

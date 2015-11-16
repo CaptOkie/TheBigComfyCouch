@@ -2,14 +2,16 @@ package couch.cushion.video;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import io.humble.video.Codec;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.Encoder;
-import io.humble.video.MediaDescriptor;
 import io.humble.video.MediaPacket;
 import io.humble.video.MediaPicture;
+import io.humble.video.MediaSampled;
 import io.humble.video.Muxer;
 import io.humble.video.MuxerFormat;
 
@@ -37,59 +39,57 @@ public class VideoConverter {
         final Demuxer demuxer = Demuxer.make();
         try {
             demuxer.open(src.toString(), null, false, true, null, null);
+            
+            final Muxer muxer = Muxer.make(dest.toString(), null, convertTo);
+            try {
+                final MuxerFormat format = muxer.getFormat();
+                
+                final Map<Integer, SampledData> sampledData = new HashMap<>();
+                for (int i = 0; i < demuxer.getNumStreams(); ++i) {
+                    
+                    final Optional<SampledData> data = SampledData.make(demuxer.getStream(i).getDecoder(), format);
+                    if (data.isPresent()) {
+                        sampledData.put(i, data.get());
+                        muxer.addNewStream(data.get().getEncoder());
+                    }
+                }
+                muxer.open(null, null);
+                
+                for (final Map.Entry<Integer, SampledData> data : sampledData.entrySet()) {
+                    final MediaPacket read = MediaPacket.make();
+                    final MediaPacket write = MediaPacket.make();
+                    final Decoder decoder = demuxer.getStream(data.getKey()).getDecoder();
 
-            for (int i = 0; i < demuxer.getNumStreams(); ++i) {
-
-                final Decoder decoder = demuxer.getStream(i).getDecoder();
-                if (decoder != null && decoder.getCodecType() == MediaDescriptor.Type.MEDIA_VIDEO) {
-
-                    final Muxer muxer = Muxer.make(dest.toString(), null, convertTo);
-
-                    try {
-                        final MuxerFormat format = muxer.getFormat();
-                        final Encoder encoder = Encoder.make(Codec.findEncodingCodec(format.getDefaultVideoCodecId()));
-                        encoder.setWidth(decoder.getWidth());
-                        encoder.setHeight(decoder.getHeight());
-                        encoder.setPixelFormat(decoder.getPixelFormat());
-                        encoder.setTimeBase(decoder.getTimeBase());
-                        if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
-                            encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
-                        }
-                        encoder.open(null, null);
-                        muxer.addNewStream(encoder);
-                        muxer.open(null, null);
-
+                    if (decoder != null) {
                         decoder.open(null, null);
 
-                        final MediaPacket read = MediaPacket.make();
-                        final MediaPacket write = MediaPacket.make();
-                        final MediaPicture picture = MediaPicture.make(decoder.getWidth(), decoder.getHeight(), decoder.getPixelFormat());
                         while (demuxer.read(read) >= 0) {
-
-                            if (read.getStreamIndex() == i) {
-
+                        
+                            if (read.getStreamIndex() == data.getKey()) {
                                 int offset = 0;
                                 do {
-                                    offset += decode(decoder, picture, read, offset, encoder, write, muxer);
+                                    offset += decode(decoder, read, offset, data.getValue(), write, muxer);
                                 } while (offset < read.getSize());
                             }
                         }
-
-                        // Clearing any cached picture data
+                        
                         do {
-                            decode(decoder, picture, null, 0, encoder, write, muxer);
-                        } while (picture.isComplete());
-
-                        // Clearing any cached packet data
-                        encode(encoder, write, null, muxer);
+                            decode(decoder, null, 0, data.getValue(), write, muxer);
+                        } while (data.getValue().getReadMedia().isComplete());
+                        
+                        encode(data.getValue().getEncoder(), write, null, muxer);
                     }
-                    finally {
-                        muxer.close();
-                    }
-
-                    break;
                 }
             }
+            catch (final Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                muxer.close();
+            }
+        }
+        catch (final Exception e) {
+            e.printStackTrace();
         }
         finally {
             demuxer.close();
@@ -109,10 +109,11 @@ public class VideoConverter {
      * @return The number of bytes decoded.
      * @throws IOException
      */
-    private int decode(final Decoder decoder, final MediaPicture picture, final MediaPacket read, final int offset, final Encoder encoder, final MediaPacket write, final Muxer muxer) throws IOException {
-        final int ret = decoder.decode(picture, read, offset);
-        if (picture.isComplete()) {
-            encode(encoder, write, picture, muxer);
+    private int decode(final Decoder decoder, final MediaPacket read, final int offset, final SampledData sampledData, final MediaPacket write, final Muxer muxer) throws IOException {
+        final int ret = decoder.decode(sampledData.getReadMedia(), read, offset);
+        if (sampledData.getReadMedia().isComplete()) {
+            sampledData.resample();
+            encode(sampledData, write, muxer);
         }
         if (ret < 0) {
             throw new IOException("Error " + ret + " returned while decoding");
@@ -121,18 +122,22 @@ public class VideoConverter {
     }
     
     /**
-     * Encodes the {@link MediaPacket} from the {@link MediaPicture} and writes the {@link MediaPacket} to the {@link Muxer}.
-     * @param encoder The {@link Encoder} used to encode the picture.
+     * Encodes the {@link MediaPacket} from the {@link MediaSampled} and writes the {@link MediaPacket} to the {@link Muxer}.
+     * @param encoder The {@link Encoder} used to encode the media.
      * @param write The {@link MediaPacket} to encode into.
-     * @param picture The {@link MediaPicture} to decode from.
+     * @param media The {@link MediaSampled} to decode from.
      * @param muxer The {@link Muxer} to write to.
      */
-    private void encode(final Encoder encoder, final MediaPacket write, final MediaPicture picture, final Muxer muxer) {
+    private void encode(final Encoder encoder, final MediaPacket write, final MediaSampled media, final Muxer muxer) {
         do {
-            encoder.encode(write, picture);
+            encoder.encode(write, media);
             if (write.isComplete()) {
                 muxer.write(write, false);
             }
         } while (write.isComplete());
+    }
+
+    private void encode(final SampledData sampledData, final MediaPacket write, final Muxer muxer) {
+        encode(sampledData.getEncoder(), write, sampledData.getWriteMedia(), muxer);
     }
 }
