@@ -1,6 +1,6 @@
 package couch.cushion;
 
-import couch.cushion.ui.ImportMediaScene;
+import couch.cushion.ui.HomeScene;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -35,7 +35,7 @@ public class TheBigComfyCouch extends Application {
         /**
          * Creation of the first scene/adding it to the window
          */
-        primaryStage.setScene(new ImportMediaScene());
+        primaryStage.setScene(new HomeScene());
         primaryStage.show();
     }
 }

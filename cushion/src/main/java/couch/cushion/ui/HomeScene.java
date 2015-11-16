@@ -12,24 +12,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
-public class ImportMediaScene extends Scene {
+public class HomeScene extends Scene {
 
-    public ImportMediaScene() {
+    public HomeScene() {
         this(new GridPane());
     }
     
-    private ImportMediaScene(GridPane grid) {
+    private HomeScene(GridPane grid) {
         super(grid);
         
         Text pathMessage = new Text();
 
         TextField pathField = new TextField();
         pathField.setPromptText("File Path");
-//        pathField.setOnKeyTyped(e -> {
-//            if (!Files.exists(Paths.get(pathField.getText()))) {
-//                
-//            }
-//        });
         
         Button search = new Button("Search");
         search.setOnAction(e -> {
