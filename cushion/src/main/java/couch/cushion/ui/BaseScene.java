@@ -18,7 +18,7 @@ public abstract class BaseScene extends Scene {
     
     protected final VBox    vbox;
     protected final MenuBar menuBar;
-    protected final Menu    file;
+    protected final Menu    fileMenu;
 
     /**
      * Default Constructor for BaseScene
@@ -39,14 +39,14 @@ public abstract class BaseScene extends Scene {
 
         // Creating menu bar with file menu. Has 'Ctrl+Q' for quitting.
         menuBar = new MenuBar();
-        file = new Menu("File");
+        fileMenu = new Menu("File");
         MenuItem quit = new MenuItem("Quit");
         quit.setAccelerator(ctrlQ);
         quit.setOnAction(e -> {
             System.exit(0);
         });
-        file.getItems().add(quit);
-        menuBar.getMenus().add(file);
+        fileMenu.getItems().add(quit);
+        menuBar.getMenus().add(fileMenu);
         
         vbox.getChildren().add(menuBar);
     }
