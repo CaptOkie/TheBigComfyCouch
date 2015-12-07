@@ -55,6 +55,21 @@ public class TheBigComfyCouch extends Application {
                 }
             }
         });
+
+        home.setOnHumbleTest(e -> {
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(home.getWindow());
+            if (file != null) {
+                try {
+                    VideoConverter videoPlayer = new VideoConverter("MP4");
+
+                    videoPlayer.playVideo(file.getPath());
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
         
 //        VBox box = new VBox();
 //        MediaPlayer player = new MediaPlayer(new Media(Paths.get("/home/henri/couch-library/test.mp4").toUri().toURL().toString()));
