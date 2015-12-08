@@ -20,7 +20,7 @@ public abstract class BaseScene extends Scene {
     
     protected final VBox    top;
     protected final VBox    right;
-    protected final HBox    bottom;
+    protected final BorderPane    center;
     protected final MenuBar menuBar;
     protected final Menu    fileMenu;
     protected final BorderPane layout;
@@ -42,11 +42,11 @@ public abstract class BaseScene extends Scene {
         this.layout = layout;
         top = new VBox();
         right = new VBox();
-        bottom = new HBox();
+        center = new BorderPane();
 
         layout.setTop(top);
         layout.setRight(right);
-        layout.setBottom(bottom);
+        layout.setCenter(center);
         // Creating menu bar with file menu. Has 'Ctrl+Q' for quitting.
         menuBar = new MenuBar();
         fileMenu = new Menu("File");

@@ -54,6 +54,7 @@ public class TheBigComfyCouch extends Application {
 //            }
 //        });
 
+        home.addUserToList("Test User");
 
         home.setOnSendPressed(e -> {
             String message = home.getMessage();

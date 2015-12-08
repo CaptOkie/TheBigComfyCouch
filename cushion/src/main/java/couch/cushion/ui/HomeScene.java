@@ -36,10 +36,6 @@ public class HomeScene extends BaseScene {
         testImprt = new MenuItem("Humble Test");
         fileMenu.getItems().add(testImprt);
 
-        //setting the video
-        layout.setCenter(view);
-
-
         //adding the chat information
 
         //adding the user list
@@ -47,8 +43,6 @@ public class HomeScene extends BaseScene {
         usersTitle.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         right.getChildren().add(usersTitle);
         userList = FXCollections.observableArrayList();
-        userList.add("User A");
-        userList.add("User B");
 
         userListView = new ListView();
         userListView.setItems(userList);
@@ -62,12 +56,12 @@ public class HomeScene extends BaseScene {
         right.getChildren().add(chatTitle);
 
         chatPane = new TextArea();
-        chatPane.setEditable(true);
+        chatPane.setEditable(false);
+        chatPane.setWrapText(true);
         chatPane.setPrefRowCount(27);
         addMessage("System", "Welcome To Chat.");
         right.getChildren().add(chatPane);
 
-        //TODO maybe move this into the control pane on the bottom
         HBox messageBox = new HBox();
         right.getChildren().add(messageBox);
         message = new TextArea();
@@ -78,28 +72,15 @@ public class HomeScene extends BaseScene {
         messageBox.getChildren().add(sendButton);
 
 
-        //setting up the controls
-        BorderPane controls = new BorderPane();
-        bottom.getChildren().add(controls);
+        //video stuff
+        center.setCenter(view);
 
         //video controls
         VBox videoControls = new VBox();
-        controls.setCenter(videoControls);
+        center.setBottom(videoControls);
         Text videoLabel = new Text("Video Controls");
         videoControls.getChildren().add(videoLabel);
         videoControls.setAlignment(Pos.TOP_CENTER);
-
-        //TODO Check if this or the above implementation flows better
-//        HBox messageBox = new HBox();
-//        controls.setRight(messageBox);
-//        message = new TextArea();
-//        message.setPrefRowCount(3);
-//        sendButton = new Button("Send");
-//
-//        messageBox.getChildren().add(message);
-//        messageBox.getChildren().add(sendButton);
-
-
     }
     
     public void setOnImport(EventHandler<ActionEvent> value) {
