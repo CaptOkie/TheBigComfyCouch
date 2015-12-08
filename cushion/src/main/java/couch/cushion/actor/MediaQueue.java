@@ -111,10 +111,10 @@ public class MediaQueue extends AbstractActor {
             WritableImage wimg = SwingFXUtils.toFXImage(img.getImage(), null);
             Platform.runLater(() -> {
                 player.play(wimg);
-                for (ByteBuffer buff : audioBuffers) {
-                    player.play(buff);
-                }
             });
+            for (ByteBuffer buff : audioBuffers) {
+                player.play(buff);
+            }
         }
     }
     
