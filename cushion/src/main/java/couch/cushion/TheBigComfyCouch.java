@@ -1,10 +1,12 @@
 package couch.cushion;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import couch.cushion.actor.Connection;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.video.VideoConverter;
 import javafx.application.Application;
@@ -22,6 +24,9 @@ public class TheBigComfyCouch extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        
+        final Connection connection = new Connection();
+        
         // Setting up main window
         primaryStage.setTitle("");
         
@@ -54,25 +59,16 @@ public class TheBigComfyCouch extends Application {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
-                try {
-//                    VideoConverter videoPlayer = new VideoConverter("MP4");
-                    new Thread(() -> {
-                        try {
-                            VideoConverter.playVideo(file.getPath(), view);
-                        }
-                        catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }).start();
-                } catch (Exception e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+                connection.decode(file.toString());
+                connection.play();
             }
         });
         
         // Displaying the window
         primaryStage.setScene(home);
+        primaryStage.setOnCloseRequest(e -> {
+            connection.terminate();
+        });
         primaryStage.show();
     }
 }

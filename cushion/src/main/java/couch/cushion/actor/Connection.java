@@ -2,6 +2,7 @@ package couch.cushion.actor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.MediaControl;
 
 public class Connection {
@@ -24,7 +25,11 @@ public class Connection {
         master.tell(MediaControl.PLAY, ActorRef.noSender());
     }
     
-    public void decode() {
-        master.tell(new Object(), ActorRef.noSender());
+    public void decode(final String url) {
+        master.tell(new Decode(url), ActorRef.noSender());
+    }
+    
+    public void terminate() {
+        system.terminate();
     }
 }
