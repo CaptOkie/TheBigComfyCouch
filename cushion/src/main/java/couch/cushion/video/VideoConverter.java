@@ -11,6 +11,10 @@ import io.humble.video.*;
 import io.humble.video.awt.ImageFrame;
 import io.humble.video.awt.MediaPictureConverter;
 import io.humble.video.awt.MediaPictureConverterFactory;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 public class VideoConverter {
 
@@ -138,7 +142,7 @@ public class VideoConverter {
         encode(sampledData.getEncoder(), write, sampledData.getWriteMedia(), muxer);
     }
 
-    public static void playVideo(String filename) throws InterruptedException, IOException {
+    public static void playVideo(String filename, ImageView view) throws InterruptedException, IOException {
     /*
      * Start by creating a container object, in this case a demuxer since
      * we are reading, to get video data from.
@@ -186,7 +190,7 @@ public class VideoConverter {
                 videoDecoder.getWidth(),
                 videoDecoder.getHeight(),
                 videoDecoder.getPixelFormat());
-
+        
         /** A converter object we'll use to convert the picture in the video to a BGR_24 format that Java Swing
          * can work with. You can still access the data directly in the MediaPicture if you prefer, but this
          * abstracts away from this demo most of that byte-conversion work. Go read the source code for the
@@ -261,7 +265,7 @@ public class VideoConverter {
                     if (picture.isComplete()) {
                         image = displayVideoAtCorrectTime(streamStartTime, picture,
                                 converter, image, window, systemStartTime, systemTimeBase,
-                                streamTimebase);
+                                streamTimebase, view);
                     }
                     offset += bytesRead;
                 } while (offset < packet.getSize());
@@ -276,7 +280,7 @@ public class VideoConverter {
             videoDecoder.decode(picture, null, 0);
             if (picture.isComplete()) {
                 image = displayVideoAtCorrectTime(streamStartTime, picture, converter,
-                        image, window, systemStartTime, systemTimeBase, streamTimebase);
+                        image, window, systemStartTime, systemTimeBase, streamTimebase, view);
             }
         } while (picture.isComplete());
 
@@ -297,7 +301,7 @@ public class VideoConverter {
     private static BufferedImage displayVideoAtCorrectTime(long streamStartTime,
                                                            final MediaPicture picture, final MediaPictureConverter converter,
                                                            BufferedImage image, final ImageFrame window, long systemStartTime,
-                                                           final Rational systemTimeBase, final Rational streamTimebase)
+                                                           final Rational systemTimeBase, final Rational streamTimebase, final ImageView view)
             throws InterruptedException {
         long streamTimestamp = picture.getTimeStamp();
         // convert streamTimestamp into system units (i.e. nano-seconds)
@@ -310,10 +314,16 @@ public class VideoConverter {
             Thread.sleep(1);
             systemTimestamp = System.nanoTime();
         }
+        
         // finally, convert the image from Humble format into Java images.
         image = converter.toImage(image, picture);
         // And ask the UI thread to repaint with the new image.
-        window.setImage(image);
+        final WritableImage s = new WritableImage(image.getWidth(), image.getHeight());
+        SwingFXUtils.toFXImage(image, s);
+//        window.setImage(image);
+        Platform.runLater(() -> {
+            view.setImage(s);
+        });
         return image;
     }
 }

@@ -8,17 +8,10 @@ import java.nio.file.Paths;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.video.VideoConverter;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-/**
- * Hello world!
- */
 public class TheBigComfyCouch extends Application {
     
     private static final Path LIBRARY = Paths.get(System.getProperty("user.home"), "couch-library") ;
@@ -36,7 +29,8 @@ public class TheBigComfyCouch extends Application {
 
         // Creating Home scene
         // setting event handler for importing a file
-        HomeScene home = new HomeScene();
+        ImageView view = new ImageView();
+        HomeScene home = new HomeScene(view);
         home.setOnImport(e -> {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(home.getWindow());
@@ -61,9 +55,15 @@ public class TheBigComfyCouch extends Application {
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
                 try {
-                    VideoConverter videoPlayer = new VideoConverter("MP4");
-
-                    videoPlayer.playVideo(file.getPath());
+//                    VideoConverter videoPlayer = new VideoConverter("MP4");
+                    new Thread(() -> {
+                        try {
+                            VideoConverter.playVideo(file.getPath(), view);
+                        }
+                        catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }).start();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -71,15 +71,8 @@ public class TheBigComfyCouch extends Application {
             }
         });
         
-//        VBox box = new VBox();
-//        MediaPlayer player = new MediaPlayer(new Media(Paths.get("/home/henri/couch-library/test.mp4").toUri().toURL().toString()));
-//        player.setAutoPlay(true);
-//        MediaView view = new MediaView(player);
-//        box.getChildren().add(view);
-        
         // Displaying the window
         primaryStage.setScene(home);
-//        primaryStage.setScene(new Scene(box, 640, 480));
         primaryStage.show();
     }
 }
