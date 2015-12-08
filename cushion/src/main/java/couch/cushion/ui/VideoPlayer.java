@@ -8,17 +8,10 @@ import javafx.scene.image.ImageView;
 
 public class VideoPlayer extends ImageView {
 
-    private AudioFrame audioFrame;
+    private final AudioFrame audioFrame;
     
     public VideoPlayer() {
-        audioFrame = null;
-    }
-    
-    public void setAudioFrame(final AudioFrame audioFrame) {
-        if (audioFrame == null) {
-            throw new IllegalArgumentException("audioFrame is null");
-        }
-        this.audioFrame = audioFrame;
+        audioFrame = AudioFrame.make();
     }
     
     public void play(final Image image) {
