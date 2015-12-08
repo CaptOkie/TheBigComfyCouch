@@ -1,4 +1,4 @@
-package couch.cushion.video;
+package couch.cushion.media;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
