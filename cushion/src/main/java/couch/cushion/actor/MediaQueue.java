@@ -98,7 +98,7 @@ public class MediaQueue extends AbstractActor {
         ImageData img = imageBuffer.poll();
         if (img != null) {
             List<ByteBuffer> audioBuffers = new ArrayList<ByteBuffer>();
-            while (!audioBuffers.isEmpty()) {
+            while (!audioBuffer.isEmpty()) {
                 AudioData audio = audioBuffer.peek();
                 if (audio.getTimestamp() <= img.getTimestamp()) {
                     audio = audioBuffer.poll();
