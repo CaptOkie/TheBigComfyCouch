@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import akka.actor.AbstractActor;
+import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.FrameRate;
+import couch.cushion.actor.message.Pause;
+import couch.cushion.actor.message.Play;
 import couch.cushion.actor.message.Process;
 import couch.cushion.media.AudioData;
 import couch.cushion.media.ImageData;
@@ -25,9 +29,11 @@ import io.humble.video.awt.MediaPictureConverter;
 import io.humble.video.awt.MediaPictureConverterFactory;
 import io.humble.video.javaxsound.MediaAudioConverter;
 import io.humble.video.javaxsound.MediaAudioConverterFactory;
+import scala.concurrent.duration.FiniteDuration;
 
 public class MediaDecoder extends AbstractActor {
     
+    private static final long TICK_DELAY = 100;
     private static final Process PROCESS_MSG = new Process();
     
 //    private final Rational systemTimeBase;
@@ -43,6 +49,9 @@ public class MediaDecoder extends AbstractActor {
     private MediaPictureConverter pictureConverter;
     private MediaPicture picture;
     
+    private Cancellable processTick;
+    private boolean playing;
+    
     public static Props props() {
         return Props.create(MediaDecoder.class, () -> new MediaDecoder());
     }
@@ -56,6 +65,8 @@ public class MediaDecoder extends AbstractActor {
         
         receive(ReceiveBuilder.match(Decode.class, msg -> handleDecode(msg))
                 .match(Process.class, msg -> doProcessWork(msg))
+                .match(Play.class, msg -> play())
+                .match(Pause.class, msg -> pause())
                 .build());
     }
     
@@ -80,7 +91,7 @@ public class MediaDecoder extends AbstractActor {
             if (decode != null) {
                 switch (decoder.getCodecType()) {
                     case MEDIA_VIDEO:
-                        if (videoDecoder != null) {
+                        if (videoDecoder == null) {
                             videoStreamId = i;
                             videoDecoder = decoder;
                             final Rational frameRate = stream.getFrameRate();
@@ -112,6 +123,10 @@ public class MediaDecoder extends AbstractActor {
             decoder.open(null, null);
             audios.put(entry.getKey(), MediaAudio.make(decoder.getFrameSize(), decoder.getSampleRate(), decoder.getChannels(), decoder.getChannelLayout(), decoder.getSampleFormat()));
             audioConverters.put(entry.getKey(), MediaAudioConverterFactory.createConverter(MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO, audios.get(entry.getKey())));
+        }
+        
+        if (playing) {
+            play();
         }
     }
     
@@ -176,7 +191,24 @@ public class MediaDecoder extends AbstractActor {
                         }
                     } while (audio.isComplete());
                 }
+                pause();
             }
+        }
+    }
+    
+    private void play() {
+        playing = true;
+        if (demuxer != null && processTick == null) {
+            FiniteDuration tick = FiniteDuration.create(TICK_DELAY, TimeUnit.MICROSECONDS);
+            processTick = getContext().system().scheduler().schedule(FiniteDuration.Zero(), tick, self(), PROCESS_MSG, getContext().dispatcher(), self());
+        }
+    }
+    
+    private void pause() {
+        playing = false;
+        if (processTick != null) {
+            processTick.cancel();
+            processTick = null;
         }
     }
     
@@ -192,12 +224,18 @@ public class MediaDecoder extends AbstractActor {
         videoDecoder = null;
         pictureConverter = null;
         picture = null;
+        
+        processTick = null;
+        playing = false;
     }
     
     @Override
     public void postStop() throws Exception {        
         if (demuxer != null) {
             demuxer.close();
+        }
+        if (processTick != null) {
+            processTick.cancel();
         }
         reset();        
     }

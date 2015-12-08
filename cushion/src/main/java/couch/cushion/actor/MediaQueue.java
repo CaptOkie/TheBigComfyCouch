@@ -98,9 +98,9 @@ public class MediaQueue extends AbstractActor {
         ImageData img = imageBuffer.poll();
         if (img != null) {
             List<ByteBuffer> audioBuffers = new ArrayList<ByteBuffer>();
-            while (!audioBuffers.isEmpty()) {
+            while (!audioBuffer.isEmpty()) {
                 AudioData audio = audioBuffer.peek();
-                if (audio.getTimestamp() >= img.getTimestamp()) {
+                if (audio.getTimestamp() <= img.getTimestamp()) {
                     audio = audioBuffer.poll();
                     audioBuffers.add(audio.getBuffer());
                 }
@@ -126,19 +126,4 @@ public class MediaQueue extends AbstractActor {
         }
         super.postStop();
     }
-//    
-//    private void processImage() {
-//        ImageData img = imageBuffer.poll();
-//        WritableImage wimg = SwingFXUtils.toFXImage(img.getImage(), null);
-//        Platform.runLater(() -> {
-//            player.play(wimg);
-//        });
-//    }
-//
-//    private void processAudio() {
-//        AudioData audio = audioBuffer.poll();
-//        Platform.runLater(() -> {
-//            player.play(audio.getBuffer());
-//        });
-//    }
 }
