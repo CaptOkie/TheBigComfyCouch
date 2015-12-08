@@ -10,6 +10,10 @@ public class AudioData implements Serializable, Comparable<AudioData> {
     private byte[] buffer;
     private long timestamp;
     
+    protected AudioData() {
+        this(null, 0);
+    }
+    
     public AudioData(final ByteBuffer buffer, final long timestamp) {
         this.buffer = buffer.array();
         this.timestamp = timestamp;

@@ -13,7 +13,11 @@ public class ImageData implements Serializable, Comparable<ImageData> {
     private static final long serialVersionUID = -6672808907294178206L;
     
     private transient BufferedImage image;
-    private long timestamp;
+    private transient long timestamp;
+    
+    protected ImageData() { 
+        this(null, 0);
+    }
     
     public ImageData(final BufferedImage image, final long timestamp) {
         this.image = image;
@@ -41,10 +45,12 @@ public class ImageData implements Serializable, Comparable<ImageData> {
     }
     
     private void writeObject(final ObjectOutputStream out) throws IOException {
+        out.writeLong(timestamp);
         ImageIO.write(getImage(), "png", out);
     }
     
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        timestamp = in.readLong();
         image = ImageIO.read(in);
     }
 }
