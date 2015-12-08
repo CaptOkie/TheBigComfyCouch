@@ -3,16 +3,17 @@ package couch.cushion.actor;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import couch.cushion.ui.VideoPlayer;
 
 public class Master extends AbstractActor {
 
     private ActorRef mediaQueue; 
     
-    public static Props props() {
-        return Props.create(Master.class, () -> new Master());
+    public static Props props(final VideoPlayer player) {
+        return Props.create(Master.class, () -> new Master(player));
     }
 
-    private Master() {
-        mediaQueue = context().actorOf(MediaQueue.props());
+    private Master(final VideoPlayer player) {
+        mediaQueue = context().actorOf(MediaQueue.props(player));
     }
 }

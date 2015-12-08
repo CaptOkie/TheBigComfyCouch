@@ -1,16 +1,14 @@
 package couch.cushion;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import couch.cushion.actor.Connection;
 import couch.cushion.ui.HomeScene;
-import couch.cushion.video.VideoConverter;
+import couch.cushion.ui.VideoPlayer;
 import javafx.application.Application;
-import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -25,7 +23,8 @@ public class TheBigComfyCouch extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         
-        final Connection connection = new Connection();
+        final VideoPlayer player = new VideoPlayer();
+        final Connection connection = new Connection(player);
         
         // Setting up main window
         primaryStage.setTitle("");
@@ -34,26 +33,25 @@ public class TheBigComfyCouch extends Application {
 
         // Creating Home scene
         // setting event handler for importing a file
-        ImageView view = new ImageView();
-        HomeScene home = new HomeScene(view);
-        home.setOnImport(e -> {
-            FileChooser fileChooser = new FileChooser();
-            File file = fileChooser.showOpenDialog(home.getWindow());
-            if(file != null) {
-                try {
-                    Path src = LIBRARY.resolve(file.getAbsolutePath());
-                    Path dst = LIBRARY.resolve(com.google.common.io.Files.getNameWithoutExtension(src.getFileName().toString()) + ".mp4");
-//                    Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
-                    
-                    VideoConverter converter = new VideoConverter("MP4");
-                    converter.convert(src.toUri().toURL(), dst.toUri().toURL());
-                }
-                catch (Exception e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-            }
-        });
+        HomeScene home = new HomeScene(player);
+//        home.setOnImport(e -> {
+//            FileChooser fileChooser = new FileChooser();
+//            File file = fileChooser.showOpenDialog(home.getWindow());
+//            if(file != null) {
+//                try {
+//                    Path src = LIBRARY.resolve(file.getAbsolutePath());
+//                    Path dst = LIBRARY.resolve(com.google.common.io.Files.getNameWithoutExtension(src.getFileName().toString()) + ".mp4");
+////                    Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
+//                    
+//                    VideoConverter converter = new VideoConverter("MP4");
+//                    converter.convert(src.toUri().toURL(), dst.toUri().toURL());
+//                }
+//                catch (Exception e1) {
+//                    // TODO Auto-generated catch block
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
 
         home.setOnHumbleTest(e -> {
             FileChooser fileChooser = new FileChooser();

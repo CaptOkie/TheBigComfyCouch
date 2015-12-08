@@ -4,17 +4,18 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.MediaControl;
+import couch.cushion.ui.VideoPlayer;
 
 public class Connection {
     
-    private final String SYSTEM_NAME = "thebigcomfycouch";
+    private static final String SYSTEM_NAME = "thebigcomfycouch";
     
     private final ActorSystem system;
     private final ActorRef master;
     
-    public Connection() {
+    public Connection(final VideoPlayer player) {
         system = ActorSystem.create(SYSTEM_NAME);
-        master = system.actorOf(Master.props());
+        master = system.actorOf(Master.props(player));
     }
     
     public void pause() {
