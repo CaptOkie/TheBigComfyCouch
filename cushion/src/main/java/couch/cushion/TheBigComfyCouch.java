@@ -27,7 +27,9 @@ public class TheBigComfyCouch extends Application {
         final Connection connection = new Connection(player);
         
         // Setting up main window
-        primaryStage.setTitle("");
+        primaryStage.setTitle("The Big Comfy Couch");
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(720);
         
         Files.createDirectories(LIBRARY);
 
