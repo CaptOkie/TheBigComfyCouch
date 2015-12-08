@@ -16,6 +16,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 
+import couch.cushion.ui.VideoPlayer;
+
 public class VideoConverter {
 
     private final String convertTo;
@@ -142,7 +144,7 @@ public class VideoConverter {
         encode(sampledData.getEncoder(), write, sampledData.getWriteMedia(), muxer);
     }
 
-    public static void playVideo(String filename, ImageView view) throws InterruptedException, IOException {
+    public static void playVideo(String filename, VideoPlayer videoPlayer) throws InterruptedException, IOException {
     /*
      * Start by creating a container object, in this case a demuxer since
      * we are reading, to get video data from.
@@ -266,7 +268,7 @@ public class VideoConverter {
                     if (picture.isComplete()) {
                         image = displayVideoAtCorrectTime(streamStartTime, picture,
                                 converter, image, window, systemStartTime, systemTimeBase,
-                                streamTimebase, view);
+                                streamTimebase, videoPlayer);
                     }
                     offset += bytesRead;
                 } while (offset < packet.getSize());
@@ -281,7 +283,7 @@ public class VideoConverter {
             videoDecoder.decode(picture, null, 0);
             if (picture.isComplete()) {
                 image = displayVideoAtCorrectTime(streamStartTime, picture, converter,
-                        image, window, systemStartTime, systemTimeBase, streamTimebase, view);
+                        image, window, systemStartTime, systemTimeBase, streamTimebase, videoPlayer);
             }
         } while (picture.isComplete());
 
@@ -302,7 +304,7 @@ public class VideoConverter {
     private static BufferedImage displayVideoAtCorrectTime(long streamStartTime,
                                                            final MediaPicture picture, final MediaPictureConverter converter,
                                                            BufferedImage image, final ImageFrame window, long systemStartTime,
-                                                           final Rational systemTimeBase, final Rational streamTimebase, final ImageView view)
+                                                           final Rational systemTimeBase, final Rational streamTimebase, final VideoPlayer videoPlayer)
             throws InterruptedException {
         long streamTimestamp = picture.getTimeStamp();
         // convert streamTimestamp into system units (i.e. nano-seconds)
@@ -323,7 +325,7 @@ public class VideoConverter {
         SwingFXUtils.toFXImage(image, s);
 //        window.setImage(image);
         Platform.runLater(() -> {
-            view.setImage(s);
+            videoPlayer.play(s);
         });
         return image;
     }

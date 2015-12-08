@@ -18,7 +18,7 @@ public class VideoPlayer extends ImageView {
         if (image == null) {
             throw new IllegalArgumentException("image is null");
         }
-        this.setImage(image); // TODO Maybe ensure the image is scaled to the size of the player if needed
+        setImage(image);
     }
     
     public void play(final ByteBuffer audio) {
