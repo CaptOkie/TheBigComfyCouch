@@ -207,10 +207,11 @@ public class VideoConverter {
          * we're 'simplifying' Java AWT UI updating code. This method just creates a single window on the UI thread, and blocks
          * until it is displayed.
          */
-        final ImageFrame window = ImageFrame.make();
-        if (window == null) {
-            throw new RuntimeException("Attempting this demo on a headless machine, and that will not work. Sad day for you.");
-        }
+        final ImageFrame window = null;
+//        final ImageFrame window = ImageFrame.make();
+//        if (window == null) {
+//            throw new RuntimeException("Attempting this demo on a headless machine, and that will not work. Sad day for you.");
+//        }
 
         /**
          * Media playback, like comedy, is all about timing. Here we're going to introduce <b>very very basic</b>
@@ -292,7 +293,7 @@ public class VideoConverter {
         demuxer.close();
 
         // similar with the demuxer, for the windowing system, clean up after yourself.
-        window.dispose();
+//        window.dispose();
     }
 
     /**

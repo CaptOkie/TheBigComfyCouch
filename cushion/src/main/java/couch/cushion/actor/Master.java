@@ -3,6 +3,7 @@ package couch.cushion.actor;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.ui.VideoPlayer;
 
 public class Master extends AbstractActor {
@@ -15,5 +16,6 @@ public class Master extends AbstractActor {
 
     private Master(final VideoPlayer player) {
         mediaQueue = context().actorOf(MediaQueue.props(player));
+        receive(ReceiveBuilder.matchAny(msg -> {}).build());
     }
 }

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import couch.cushion.actor.Connection;
+import couch.cushion.media.VideoConverter;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.ui.VideoPlayer;
 import javafx.application.Application;
@@ -57,8 +58,17 @@ public class TheBigComfyCouch extends Application {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
-                connection.decode(file.toString());
-                connection.play();
+                new Thread(() -> {
+                    try {
+                        VideoConverter.playVideo(file.toString(), player);
+                    }
+                    catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }).start();
+//                connection.decode(file.toString());
+//                connection.play();
             }
         });
         
