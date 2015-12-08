@@ -55,6 +55,7 @@ public class TheBigComfyCouch extends Application {
 //        });
 
         home.setOnHumbleTest(e -> {
+            home.addMessage("SYSTEM", "this is a test");
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
