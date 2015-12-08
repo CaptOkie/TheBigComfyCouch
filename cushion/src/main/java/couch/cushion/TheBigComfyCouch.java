@@ -28,8 +28,6 @@ public class TheBigComfyCouch extends Application {
         
         // Setting up main window
         primaryStage.setTitle("The Big Comfy Couch");
-        primaryStage.setWidth(1280);
-        primaryStage.setHeight(720);
         
         Files.createDirectories(LIBRARY);
 

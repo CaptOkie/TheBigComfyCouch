@@ -32,7 +32,7 @@ public abstract class BaseScene extends Scene {
      * @param vbox Takes a vbox that will hold the menu bar along with othe scene nodes.
      */
     private BaseScene(VBox vbox) {
-        super(vbox, 300, 300);
+        super(vbox, 1280, 720);
         KeyCodeCombination ctrlQ = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
         
         this.vbox = vbox;
