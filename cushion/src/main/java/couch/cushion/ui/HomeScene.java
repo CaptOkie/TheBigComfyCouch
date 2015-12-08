@@ -110,6 +110,11 @@ public class HomeScene extends BaseScene {
         testImprt.setOnAction(value);
     }
 
+    public void setOnSendPressed(EventHandler<ActionEvent> value)
+    {
+        sendButton.setOnAction(value);
+    }
+
     public void addUserToList(String user)
     {
         userList.add(user);

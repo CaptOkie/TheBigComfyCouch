@@ -54,7 +54,15 @@ public class TheBigComfyCouch extends Application {
 //            }
 //        });
 
-        home.setOnHumbleTest(e -> { 
+
+        home.setOnSendPressed(e -> {
+            String message = home.getMessage();
+            if(!message.equals("")){
+                home.addMessage("Test User", message);
+            }
+        });
+
+        home.setOnHumbleTest(e -> {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
