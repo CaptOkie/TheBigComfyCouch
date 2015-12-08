@@ -1,13 +1,18 @@
 package couch.cushion.media;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
+import javax.imageio.ImageIO;
 
 public class ImageData implements Serializable, Comparable<ImageData> {
 
     private static final long serialVersionUID = -6672808907294178206L;
     
-    private transient BufferedImage image; // TODO Manually serialize
+    private transient BufferedImage image;
     private long timestamp;
     
     public ImageData(final BufferedImage image, final long timestamp) {
@@ -33,5 +38,13 @@ public class ImageData implements Serializable, Comparable<ImageData> {
             return 1;
         }
         return 0;
+    }
+    
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        ImageIO.write(getImage(), "png", out);
+    }
+    
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        image = ImageIO.read(in);
     }
 }
