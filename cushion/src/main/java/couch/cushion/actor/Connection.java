@@ -3,7 +3,8 @@ package couch.cushion.actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import couch.cushion.actor.message.Decode;
-import couch.cushion.actor.message.MediaControl;
+import couch.cushion.actor.message.Pause;
+import couch.cushion.actor.message.Play;
 import couch.cushion.ui.VideoPlayer;
 
 public class Connection {
@@ -19,11 +20,11 @@ public class Connection {
     }
     
     public void pause() {
-        master.tell(MediaControl.PAUSE, ActorRef.noSender());
+        master.tell(new Pause(), ActorRef.noSender());
     }
     
     public void play() {
-        master.tell(MediaControl.PLAY, ActorRef.noSender());
+        master.tell(new Play(), ActorRef.noSender());
     }
     
     public void decode(final String url) {
