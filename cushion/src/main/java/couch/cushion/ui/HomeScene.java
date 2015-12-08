@@ -16,7 +16,7 @@ public class HomeScene extends BaseScene {
         fileMenu.getItems().add(imprt);
         testImprt = new MenuItem("Humble Test");
         fileMenu.getItems().add(testImprt);
-        vbox.getChildren().add(view);
+        top.getChildren().add(view);
     }
     
     public void setOnImport(EventHandler<ActionEvent> value) {
