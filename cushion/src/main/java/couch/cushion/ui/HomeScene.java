@@ -11,6 +11,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -20,7 +21,10 @@ import javafx.scene.text.Text;
 
 public class HomeScene extends BaseScene {
 
+    private MediaPane mediaPane;
     private final MenuItem loadVideo;
+    private GridPane grid;
+    
     
     private BorderPane borderPane;
     private VBox right;
@@ -40,6 +44,8 @@ public class HomeScene extends BaseScene {
         right = new VBox();
         center = new BorderPane();
 
+        mediaPane = new MediaPane(videoPlayer);
+        
         //adding the chat information
 
         //adding the user list
@@ -81,9 +87,10 @@ public class HomeScene extends BaseScene {
 
 
         //video stuff
-        center.setCenter(videoPlayer);
-        videoPlayer.setMaxWidth(center.getPrefWidth());
-        videoPlayer.setMaxHeight(getHeight() * 0.8);
+//        center.setCenter(videoPlayer);
+//        videoPlayer.setMaxWidth(center.getPrefWidth());
+//        videoPlayer.setMaxHeight(getHeight() * 0.8);
+        center.setCenter(mediaPane);
 
         //video controls
         VBox videoControls = new VBox();
