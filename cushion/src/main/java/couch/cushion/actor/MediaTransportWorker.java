@@ -30,7 +30,7 @@ import couch.cushion.media.ImageSegment;
 
 public class MediaTransportWorker extends AbstractActor {
 
-    private static final int BUFFER_SIZE = 65536;
+    private static final int BUFFER_SIZE = 32768;
     
     private static final UUID IDENTIFY_MEDIA_DECODER_ID = UUID.randomUUID();
     private static final UUID IDENTIFY_MEDIA_QUEUE_ID = UUID.randomUUID();
@@ -89,9 +89,9 @@ public class MediaTransportWorker extends AbstractActor {
                         }
                     })
                     .build());
-//            getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
-//                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
-//                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
+            getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
+                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
+                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
         }
     }
     

@@ -33,10 +33,9 @@ import scala.concurrent.duration.FiniteDuration;
 
 public class MediaDecoder extends AbstractActor {
     
-    private static final long TICK_DELAY = 1000;
+    private static final long TICK_DELAY = 10000;
     private static final Process PROCESS_MSG = new Process();
     
-//    private final Rational systemTimeBase;
     private Demuxer demuxer;
     private MediaPacket packet;
     
@@ -57,7 +56,6 @@ public class MediaDecoder extends AbstractActor {
     }
     
     private MediaDecoder() {
-//        systemTimeBase = Rational.make(1, 1000000000);
         audioDecoders = new HashMap<>();
         audioConverters = new HashMap<>();
         audios = new HashMap<>();

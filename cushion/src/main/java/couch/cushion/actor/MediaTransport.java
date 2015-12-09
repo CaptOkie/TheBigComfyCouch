@@ -11,7 +11,7 @@ import akka.japi.pf.ReceiveBuilder;
 
 public class MediaTransport extends AbstractActor {
 
-    private static final int WORKER_COUNT = 10;
+    private static final int WORKER_COUNT = 4;
     
     public static Props props() {
         return Props.create(MediaTransport.class, () -> new MediaTransport());
