@@ -35,17 +35,14 @@ public class ImageSegmentSerializer extends JSerializer {
 
     @Override
     public Object fromBinaryJava(final byte[] bytes, final Class<?> manifest) {
-        if (ImageSegment.class.isAssignableFrom(manifest)) {
-            final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            final long timestamp = buffer.getLong();
-            final int id = buffer.getInt();
-            final int index = buffer.getInt();
-            final int num = buffer.getInt();
-            final boolean isLast = buffer.get() > 0;
-            final byte[] data = new byte[num];
-            buffer.get(data);
-            return new ImageSegment(timestamp, id, index, data, num, isLast);
-        }
-        return null;
+        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        final long timestamp = buffer.getLong();
+        final int id = buffer.getInt();
+        final int index = buffer.getInt();
+        final int num = buffer.getInt();
+        final boolean isLast = buffer.get() > 0;
+        final byte[] data = new byte[num];
+        buffer.get(data);
+        return new ImageSegment(timestamp, id, index, data, num, isLast);
     }
 }
