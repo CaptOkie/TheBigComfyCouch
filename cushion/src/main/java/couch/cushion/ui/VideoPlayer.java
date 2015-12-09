@@ -15,8 +15,16 @@ public class VideoPlayer extends ImageView {
         if (image == null) {
             throw new IllegalArgumentException("image is null");
         }
-        setFitWidth(maxWidth);
-        setFitHeight(maxWidth);
+        
+        double w = image.getWidth(), h = image.getHeight();
+        if (w / (maxWidth / maxHeight) > h) {
+            setFitWidth(maxWidth);
+            setFitHeight(h / (w / maxWidth));
+        } else {
+            setFitHeight(maxHeight);
+            setFitWidth(w / (h / maxHeight));
+        }
+        
         setImage(image);
     }
     

@@ -51,7 +51,9 @@ public abstract class BaseScene extends Scene {
         layout.setRight(right);
         layout.setCenter(center);
         center.setMinWidth(getWidth() * 0.7);
+        center.setPrefWidth(getWidth() * 0.7);
         right.setMinWidth(getWidth() * 0.3);
+        right.setPrefWidth(getWidth() * 0.3);
         // Creating menu bar with file menu. Has 'Ctrl+Q' for quitting.
         menuBar = new MenuBar();
         fileMenu = new Menu("File");

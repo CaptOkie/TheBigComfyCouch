@@ -66,6 +66,7 @@ public class HomeScene extends BaseScene {
         HBox messageBox = new HBox();
         right.getChildren().add(messageBox);
         message = new TextArea();
+        chatPane.setWrapText(true);
         message.setPrefRowCount(3);
         message.setMinHeight(getHeight() * 0.2);
         sendButton = new Button("Send");
@@ -77,7 +78,8 @@ public class HomeScene extends BaseScene {
 
         //video stuff
         center.setCenter(videoPlayer);
-        videoPlayer.setMaxWidth(center.getMinWidth());
+        videoPlayer.setMaxWidth(center.getPrefWidth());
+        videoPlayer.setMaxHeight(getHeight() * 0.8);
 
         //video controls
         VBox videoControls = new VBox();
