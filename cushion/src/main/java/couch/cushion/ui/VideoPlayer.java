@@ -6,6 +6,9 @@ import javafx.scene.image.ImageView;
 public class VideoPlayer extends ImageView {
 
     public VideoPlayer() {
+        this.setPreserveRatio(true);
+        this.setFitWidth(600);
+        this.setFitHeight(480);
     }
     
     public void play(final Image image) {
