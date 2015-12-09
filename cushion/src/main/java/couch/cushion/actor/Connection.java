@@ -8,15 +8,13 @@ import couch.cushion.actor.message.Play;
 import couch.cushion.ui.VideoPlayer;
 
 public class Connection {
-    
-    private static final String SYSTEM_NAME = "thebigcomfycouch";
-    
+        
     private final ActorSystem system;
     private final ActorRef master;
     
     public Connection(final VideoPlayer player) {
-        system = ActorSystem.create(SYSTEM_NAME);
-        master = system.actorOf(Master.props(player));
+        system = ActorSystem.create(ActorConstants.SYSTEM_NAME);
+        master = system.actorOf(Master.props(player), ActorConstants.MASTER_NAME);
     }
     
     public void pause() {
