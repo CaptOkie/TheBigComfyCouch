@@ -78,10 +78,12 @@ public class MediaTransport extends AbstractActor {
                     .match(ActorIdentity.class, msg -> {
                         if (IDENTIFY_MEDIA_TRANSPORT_ID.equals(msg.correlationId())) {
                             others.add(sender());
+                            System.out.println("READY!!!");
                         }
                     })
                     .build());
-//          other = getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_QUEUE_NAME);
+//            getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME)
+//                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_ID), self());
         }
     }
     
@@ -126,17 +128,22 @@ public class MediaTransport extends AbstractActor {
             mediaQueue.tell(new ImageData(image, set.first().getTimestamp()), self());
         }
     }
-    
+    private static final int BUFFER_SIZE = 8192;
     private void breakDown(final ImageData img) throws IOException {
         
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); final PipedOutputStream pos = new PipedOutputStream(); final PipedInputStream pis = new PipedInputStream(pos)) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
             ImageIO.write(img.getImage(), "png", bos);
+            final byte[] image = bos.toByteArray();
             
             ImageSegment prev = null;
-            byte[] buffer = new byte[8192];
-            for (int num = pis.read(buffer, 0, buffer.length); num > 0; num = pis.read(buffer, 0, buffer.length)) {
-                buffer = new byte[8192];
+            for (int i = 0; i < image.length; i += BUFFER_SIZE) {
+                
+                final byte[] buffer = new byte[BUFFER_SIZE];
+                final int num = Math.min(BUFFER_SIZE, image.length - i);
+                for (int j = 0; j < num; ++j) {
+                    buffer[j] = image[i + j];
+                }
                 
                 int index = 0;
                 if (prev != null) {
