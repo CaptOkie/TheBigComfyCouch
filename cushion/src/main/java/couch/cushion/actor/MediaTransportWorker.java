@@ -89,9 +89,9 @@ public class MediaTransportWorker extends AbstractActor {
                         }
                     })
                     .build());
-            getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
-                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
-                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
+//            getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
+//                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
+//                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
         }
     }
     
