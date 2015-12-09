@@ -66,7 +66,7 @@ public class ImageSegment implements Serializable, Comparable<ImageSegment> {
             return -1;
         }
         if (getIndex() > other.getIndex()) {
-            return -1;
+            return 1;
         }
         return 0;
     }
