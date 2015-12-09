@@ -2,7 +2,6 @@ package couch.cushion.actor;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.actor.message.Decode;
@@ -17,7 +16,7 @@ public class Master extends AbstractActor {
 
     private ActorRef mediaQueue;
     private ActorRef mediaDecoder;
-//    private ActorSelection other;
+    private ActorRef mediaTransport;
     
     public static Props props(final VideoPlayer player) {
         return Props.create(Master.class, () -> new Master(player));
@@ -26,30 +25,32 @@ public class Master extends AbstractActor {
     private Master(final VideoPlayer player) {
         
         mediaQueue = getContext().actorOf(MediaQueue.props(player), ActorConstants.MEDIA_QUEUE_NAME);
-        mediaDecoder = getContext().actorOf(MediaDecoder.props());
-//        other = getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_QUEUE_NAME);
+        mediaDecoder = getContext().actorOf(MediaDecoder.props(), ActorConstants.MEDIA_DECODER_NAME);
+        mediaTransport = getContext().actorOf(MediaTransport.props(), ActorConstants.MEDIA_TRANSPORT_NAME);
+        
         receive(
-                ReceiveBuilder.match(Play.class, msg -> {
-                    mediaQueue.forward(msg, getContext());
-                    mediaDecoder.forward(msg, getContext());
-//                    other.tell(msg, self());;
+                ReceiveBuilder.match(Decode.class, msg -> mediaDecoder.tell(msg, self()))
+                .match(Play.class, msg -> {
+                    mediaTransport.tell(msg, self());
+                    mediaQueue.tell(msg, self());
+                    mediaDecoder.tell(msg, self());
                 })
                 .match(Pause.class, msg -> {
-                    mediaQueue.forward(msg, getContext());
-                    mediaDecoder.forward(msg, getContext());
+                    mediaTransport.tell(msg, self());
+                    mediaQueue.tell(msg, self());
+                    mediaDecoder.tell(msg, self());
                 })
-                .match(Decode.class, msg -> mediaDecoder.forward(msg, getContext()))
                 .match(ImageData.class, msg -> {
-                    mediaQueue.forward(msg, getContext());
-//                    other.tell(msg, self());;
+                    mediaTransport.tell(msg, self());
+                    mediaQueue.tell(msg, self());
                 })
                 .match(AudioData.class, msg -> {
-                    mediaQueue.forward(msg, getContext());
-//                    other.tell(msg, self());;
+                    mediaTransport.tell(msg, self());
+                    mediaQueue.tell(msg, self());
                 })
                 .match(FrameRate.class, msg -> {
-                    mediaQueue.forward(msg, getContext());
-//                    other.tell(msg, self());;
+                    mediaTransport.tell(msg, self());
+                    mediaQueue.tell(msg, self());
                 })
                 .build()
             );
