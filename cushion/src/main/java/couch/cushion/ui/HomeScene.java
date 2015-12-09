@@ -22,6 +22,8 @@ public class HomeScene extends BaseScene {
 
     private final MenuItem loadVideo;
 
+    // A comment
+    
     private ListView userListView;
     private ObservableList userList;
     private TextArea chatPane;
