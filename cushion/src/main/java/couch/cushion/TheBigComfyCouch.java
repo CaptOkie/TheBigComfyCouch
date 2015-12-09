@@ -38,7 +38,7 @@ public class TheBigComfyCouch extends Application {
         username = "DefaultUser";
         // Creating Home scene
         // setting event handler for importing a file
-        StartupScene startup = new StartupScene();
+//        StartupScene startup = new StartupScene();
         HomeScene home = new HomeScene(player);
 //        home.setOnImport(e -> {
 //            FileChooser fileChooser = new FileChooser();
@@ -87,27 +87,27 @@ public class TheBigComfyCouch extends Application {
             }
         });
 
-        startup.setOnConenctPressed(e -> {
-            String ip = startup.getIPAddress();
-            username = startup.getUsername();
-            if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {
-                //TODO connection stuff
-                home.addUserToList(username);
-                primaryStage.setScene(home);
-            }
-        });
-
-        startup.setOnHostPressed(e -> {
-            username = startup.getUsername();
-            if(!username.equals("")&& !username.equals("Username")) {
-                home.addUserToList(username);
-                primaryStage.setScene(home);
-            }
-            //TODO other host stuff?
-        });
+//        startup.setOnConenctPressed(e -> {
+//            String ip = startup.getIPAddress();
+//            username = startup.getUsername();
+//            if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {
+//                //TODO connection stuff
+//                home.addUserToList(username);
+//                primaryStage.setScene(home);
+//            }
+//        });
+//
+//        startup.setOnHostPressed(e -> {
+//            username = startup.getUsername();
+//            if(!username.equals("")&& !username.equals("Username")) {
+//                home.addUserToList(username);
+//                primaryStage.setScene(home);
+//            }
+//            //TODO other host stuff?
+//        });
         
         // Displaying the window
-        primaryStage.setScene(startup);
+        primaryStage.setScene(home);
         primaryStage.setOnCloseRequest(e -> {
             connection.terminate();
         });

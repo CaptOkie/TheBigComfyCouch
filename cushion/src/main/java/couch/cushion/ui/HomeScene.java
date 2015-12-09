@@ -21,8 +21,10 @@ import javafx.scene.text.Text;
 public class HomeScene extends BaseScene {
 
     private final MenuItem loadVideo;
-
-    // A comment
+    
+    private BorderPane borderPane;
+    private VBox right;
+    private BorderPane center;
     
     private ListView userListView;
     private ObservableList userList;
@@ -34,6 +36,9 @@ public class HomeScene extends BaseScene {
     public HomeScene(VideoPlayer videoPlayer) {
         loadVideo = new MenuItem("Load Video");
         fileMenu.getItems().add(loadVideo);
+        borderPane = new BorderPane();
+        right = new VBox();
+        center = new BorderPane();
 
         //adding the chat information
 
@@ -86,6 +91,11 @@ public class HomeScene extends BaseScene {
         Text videoLabel = new Text("Video Controls");
         videoControls.getChildren().add(videoLabel);
         videoControls.setAlignment(Pos.TOP_CENTER);
+
+        // Putting all nodes into their respective locations.
+        borderPane.setCenter(center);
+        borderPane.setRight(right);
+        vbox.getChildren().add(borderPane);
     }
 
     public void setOnLoadVideo(EventHandler<ActionEvent> value) {

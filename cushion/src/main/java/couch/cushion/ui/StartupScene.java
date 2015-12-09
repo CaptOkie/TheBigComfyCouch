@@ -40,7 +40,7 @@ public class StartupScene extends BaseScene {
         fieldBox.getChildren().addAll(nameField, ipField);
         buttonBox.getChildren().addAll(hostButton, connectButton);
         buttonBox.setSpacing(15);
-        center.setCenter(vbox);
+//        center.setCenter(vbox);
 
     }
 
