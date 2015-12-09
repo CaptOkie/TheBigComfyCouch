@@ -68,15 +68,15 @@ public class TheBigComfyCouch extends Application {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
-                new Thread(() -> {
-                    try {
-                        VideoConverter.playVideo(file.toString(), player);
-                    }
-                    catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                }).start();
+//                new Thread(() -> {
+//                    try {
+//                        VideoConverter.playVideo(file.toString(), player);
+//                    }
+//                    catch (Exception e1) {
+//                        // TODO Auto-generated catch block
+//                        e1.printStackTrace();
+//                    }
+//                }).start();
                 connection.decode(file.toString());
                 connection.play();
             }
