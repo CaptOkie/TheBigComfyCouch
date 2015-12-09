@@ -1,5 +1,7 @@
 package couch.cushion.ui;
 
+import java.awt.Toolkit;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -37,7 +39,8 @@ public abstract class BaseScene extends Scene {
      * @param layout Takes a BorderPane that will layout our scene.
      */
     private BaseScene(BorderPane layout) {
-        super(layout, 1280, 720);
+        super(layout, Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.8,
+        		Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.8);
         KeyCodeCombination ctrlQ = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
         this.layout = layout;
         top = new VBox();
@@ -47,6 +50,8 @@ public abstract class BaseScene extends Scene {
         layout.setTop(top);
         layout.setRight(right);
         layout.setCenter(center);
+        center.setMinWidth(getWidth() * 0.7);
+        right.setMinWidth(getWidth() * 0.3);
         // Creating menu bar with file menu. Has 'Ctrl+Q' for quitting.
         menuBar = new MenuBar();
         fileMenu = new Menu("File");
