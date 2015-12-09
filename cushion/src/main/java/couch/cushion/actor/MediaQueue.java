@@ -7,6 +7,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
@@ -30,6 +31,7 @@ public class MediaQueue extends AbstractActor {
     private Cancellable frameTick;
     
     private VideoPlayer player;
+    private ActorRef audioPlayer;
 
     private PriorityQueue<ImageData> imageBuffer;
     private PriorityQueue<AudioData> audioBuffer;
@@ -43,6 +45,7 @@ public class MediaQueue extends AbstractActor {
     }
 
     private MediaQueue(final VideoPlayer player) {
+        audioPlayer = getContext().actorOf(AudioPlayer.props());
         
         frameTick = null;
         
@@ -113,7 +116,7 @@ public class MediaQueue extends AbstractActor {
                 player.play(wimg);
             });
             for (ByteBuffer buff : audioBuffers) {
-                player.play(buff);
+                audioPlayer.tell(buff, self());
             }
         }
     }
