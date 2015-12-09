@@ -1,7 +1,6 @@
 package couch.cushion.actor;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -76,12 +75,9 @@ public class MediaTransport extends AbstractActor {
                 pos.write(segment.getData(), 0, segment.getNum());
             }
             pos.flush();
-
-            try (final ObjectInputStream ois = new ObjectInputStream(pis)) {
-                final long timestamp = ois.readLong();
-                final BufferedImage image = ImageIO.read(ois);
-                mediaQueue.tell(new ImageData(image, timestamp), self());
-            }
+            
+            final BufferedImage image = ImageIO.read(pis);
+            mediaQueue.tell(new ImageData(image, set.first().getTimestamp()), self());
         }
     }
     
