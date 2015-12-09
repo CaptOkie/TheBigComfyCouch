@@ -68,7 +68,7 @@ public class TheBigComfyCouch extends Application {
             }
         });
 
-        home.setOnHumbleTest(e -> {
+        home.setOnLoadVideo(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             File file = fileChooser.showOpenDialog(home.getWindow());
