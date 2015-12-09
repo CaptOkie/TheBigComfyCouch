@@ -39,7 +39,7 @@ public class MediaTransport extends AbstractActor {
     private ActorRef mediaQueue;
     private ActorRef mediaDecoder;
     private Collection<ActorRef> others;
-    private int id = Integer.MIN_VALUE;
+    private int id;
     
     public static Props props() {
         return Props.create(MediaTransport.class, () -> new MediaTransport());
@@ -48,6 +48,7 @@ public class MediaTransport extends AbstractActor {
     private MediaTransport() {
         segments = new HashMap<>();
         mediaQueue = null;
+        mediaDecoder = null;
         others = new LinkedList<>();
         id = Integer.MIN_VALUE;
         
@@ -60,11 +61,11 @@ public class MediaTransport extends AbstractActor {
     private void setOperational(final ActorIdentity pingResponse) {
         
         if (mediaQueue == null && IDENTIFY_MEDIA_QUEUE_ID.equals(pingResponse.correlationId())) {
-            mediaQueue = sender();
+            mediaQueue = pingResponse.getRef();
         }
         
         if (mediaDecoder == null && IDENTIFY_MEDIA_DECODER_ID.equals(pingResponse.correlationId())) {
-            mediaDecoder = sender();
+            mediaDecoder = pingResponse.getRef();
         }
 
         if (mediaQueue != null && mediaDecoder != null) {
@@ -77,7 +78,7 @@ public class MediaTransport extends AbstractActor {
                     .match(Pause.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(ActorIdentity.class, msg -> {
                         if (IDENTIFY_MEDIA_TRANSPORT_ID.equals(msg.correlationId())) {
-                            others.add(sender());
+                            others.add(msg.getRef());
                             System.out.println("READY!!!");
                         }
                     })
