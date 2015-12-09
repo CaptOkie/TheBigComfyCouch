@@ -90,7 +90,7 @@ public class TheBigComfyCouch extends Application {
         startup.setOnConenctPressed(e -> {
             String ip = startup.getIPAddress();
             username = startup.getUsername();
-            if(!username.equals("") && !ip.equals("")) {
+            if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {
                 //TODO connection stuff
                 home.addUserToList(username);
                 primaryStage.setScene(home);
@@ -99,7 +99,7 @@ public class TheBigComfyCouch extends Application {
 
         startup.setOnHostPressed(e -> {
             username = startup.getUsername();
-            if(!username.equals("")) {
+            if(!username.equals("")&& !username.equals("Username")) {
                 home.addUserToList(username);
                 primaryStage.setScene(home);
             }
