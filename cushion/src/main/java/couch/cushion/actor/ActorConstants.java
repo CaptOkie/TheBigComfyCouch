@@ -6,4 +6,5 @@ class ActorConstants {
     public static final String MEDIA_DECODER_NAME = "media-decoder";
     public static final String MEDIA_QUEUE_NAME = "media-queue";
     public static final String MEDIA_TRANSPORT_NAME = "media-transport";
+    public static final String MEDIA_TRANSPORT_WORKER_NAME = MEDIA_TRANSPORT_NAME + "-worker";
 }

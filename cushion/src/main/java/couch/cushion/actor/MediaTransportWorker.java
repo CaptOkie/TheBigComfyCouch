@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,13 +28,15 @@ import couch.cushion.media.AudioData;
 import couch.cushion.media.ImageData;
 import couch.cushion.media.ImageSegment;
 
-public class MediaTransport extends AbstractActor {
+public class MediaTransportWorker extends AbstractActor {
 
-    private static final int BUFFER_SIZE = 8192;
+    private static final int BUFFER_SIZE = 65536;
     
     private static final UUID IDENTIFY_MEDIA_DECODER_ID = UUID.randomUUID();
     private static final UUID IDENTIFY_MEDIA_QUEUE_ID = UUID.randomUUID();
-    private static final UUID IDENTIFY_MEDIA_TRANSPORT_ID = UUID.randomUUID();
+    private static final UUID IDENTIFY_MEDIA_TRANSPORT_WORKER_ID = UUID.randomUUID();
+    
+    private final int instance;
     
     private Map<Integer, SortedSet<ImageSegment>> segments;
     private ActorRef mediaQueue;
@@ -44,19 +44,22 @@ public class MediaTransport extends AbstractActor {
     private Collection<ActorRef> others;
     private int id;
     
-    public static Props props() {
-        return Props.create(MediaTransport.class, () -> new MediaTransport());
+    public static Props props(final int instance) {
+        return Props.create(MediaTransportWorker.class, () -> new MediaTransportWorker(instance));
     }
     
-    private MediaTransport() {
+    private MediaTransportWorker(final int instance) {
+        
+        this.instance = instance;
+        
         segments = new HashMap<>();
         mediaQueue = null;
         mediaDecoder = null;
         others = new LinkedList<>();
         id = Integer.MIN_VALUE;
         
-        getContext().actorSelection("../" + ActorConstants.MEDIA_QUEUE_NAME).tell(new Identify(IDENTIFY_MEDIA_QUEUE_ID), self());
-        getContext().actorSelection("../" + ActorConstants.MEDIA_DECODER_NAME).tell(new Identify(IDENTIFY_MEDIA_DECODER_ID), self());
+        getContext().actorSelection("../../" + ActorConstants.MEDIA_QUEUE_NAME).tell(new Identify(IDENTIFY_MEDIA_QUEUE_ID), self());
+        getContext().actorSelection("../../" + ActorConstants.MEDIA_DECODER_NAME).tell(new Identify(IDENTIFY_MEDIA_DECODER_ID), self());
         
         receive(ReceiveBuilder.match(ActorIdentity.class, msg -> setOperational(msg)).build());
     }
@@ -80,14 +83,15 @@ public class MediaTransport extends AbstractActor {
                     .match(Play.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(Pause.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(ActorIdentity.class, msg -> {
-                        if (IDENTIFY_MEDIA_TRANSPORT_ID.equals(msg.correlationId())) {
+                        if (IDENTIFY_MEDIA_TRANSPORT_WORKER_ID.equals(msg.correlationId())) {
                             others.add(msg.getRef());
-                            System.out.println("READY!!!");
+                            System.out.println(instance + " READY!!!");
                         }
                     })
                     .build());
-//            getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME)
-//                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_ID), self());
+            getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
+                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
+                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
         }
     }
     
@@ -159,7 +163,6 @@ public class MediaTransport extends AbstractActor {
             }
             if (prev != null) {
                 sendData(new ImageSegment(prev.getTimestamp(), prev.getId(), prev.getIndex(), prev.getData(), prev.getNum(), true));
-                System.out.println("Sending last one");
             }
             
             id += 1;
