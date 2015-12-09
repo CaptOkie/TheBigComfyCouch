@@ -1,6 +1,7 @@
 package couch.cushion.actor;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -31,6 +32,8 @@ import couch.cushion.media.ImageSegment;
 
 public class MediaTransport extends AbstractActor {
 
+    private static final int BUFFER_SIZE = 8192;
+    
     private static final UUID IDENTIFY_MEDIA_DECODER_ID = UUID.randomUUID();
     private static final UUID IDENTIFY_MEDIA_QUEUE_ID = UUID.randomUUID();
     private static final UUID IDENTIFY_MEDIA_TRANSPORT_ID = UUID.randomUUID();
@@ -83,7 +86,7 @@ public class MediaTransport extends AbstractActor {
                         }
                     })
                     .build());
-//            getContext().actorSelection("akka.udp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME)
+//            getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME)
 //                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_ID), self());
         }
     }
@@ -118,18 +121,19 @@ public class MediaTransport extends AbstractActor {
     
     private void build(final SortedSet<ImageSegment> set) throws IOException {
         
-        try (final PipedOutputStream pos = new PipedOutputStream(); final PipedInputStream pis = new PipedInputStream(pos)) {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             
             for (final ImageSegment segment : set) {
-                pos.write(segment.getData(), 0, segment.getNum());
+                bos.write(segment.getData(), 0, segment.getNum());
             }
-            pos.flush();
             
-            final BufferedImage image = ImageIO.read(pis);
-            mediaQueue.tell(new ImageData(image, set.first().getTimestamp()), self());
+            try (final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray())) {
+                final BufferedImage image = ImageIO.read(bis);
+                mediaQueue.tell(new ImageData(image, set.first().getTimestamp()), self());
+            }
         }
     }
-    private static final int BUFFER_SIZE = 8192;
+
     private void breakDown(final ImageData img) throws IOException {
         
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -155,6 +159,7 @@ public class MediaTransport extends AbstractActor {
             }
             if (prev != null) {
                 sendData(new ImageSegment(prev.getTimestamp(), prev.getId(), prev.getIndex(), prev.getData(), prev.getNum(), true));
+                System.out.println("Sending last one");
             }
             
             id += 1;
