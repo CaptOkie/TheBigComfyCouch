@@ -11,17 +11,19 @@ public class MediaPane extends Pane {
     protected final GridPane gridPane;
     
     protected MediaPane(VideoPlayer player) {
-        this(new VBox());
+        this(new VBox(), player);
     }
     
-    private MediaPane(VBox vbox) {
+    private MediaPane(VBox vbox, VideoPlayer player) {
         super(vbox);
         this.vbox = vbox;
+        this.player = player;
         
-        player = new VideoPlayer();
         gridPane = new GridPane();
         
         gridPane.getChildren().add(player);
+        player.setMaxHeight(100.0);
+        player.setMaxWidth(200.0);
         
         vbox.getChildren().add(gridPane);
     }
