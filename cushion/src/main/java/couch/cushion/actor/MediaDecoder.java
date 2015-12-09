@@ -33,7 +33,7 @@ import scala.concurrent.duration.FiniteDuration;
 
 public class MediaDecoder extends AbstractActor {
     
-    private static final long TICK_DELAY = 100;
+    private static final long TICK_DELAY = 1000;
     private static final Process PROCESS_MSG = new Process();
     
 //    private final Rational systemTimeBase;

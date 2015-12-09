@@ -1,5 +1,8 @@
 package couch.cushion.actor.message;
 
-public class Pause {
+import java.io.Serializable;
 
+public class Pause implements Serializable {
+
+    private static final long serialVersionUID = -9010102843542084128L;
 }
