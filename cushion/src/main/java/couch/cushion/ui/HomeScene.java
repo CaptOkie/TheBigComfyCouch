@@ -30,7 +30,7 @@ public class HomeScene extends BaseScene {
     private Button sendButton;
 //    private final 
     
-    public HomeScene(ImageView view) {
+    public HomeScene(VideoPlayer videoPlayer) {
         imprt = new MenuItem("Import");
         fileMenu.getItems().add(imprt);
         testImprt = new MenuItem("Humble Test");
@@ -46,7 +46,7 @@ public class HomeScene extends BaseScene {
 
         userListView = new ListView();
         userListView.setItems(userList);
-        userListView.setPrefHeight(140);
+        userListView.setMinHeight(getHeight() * 0.2);
 
         right.getChildren().add(userListView);
 
@@ -59,6 +59,7 @@ public class HomeScene extends BaseScene {
         chatPane.setEditable(false);
         chatPane.setWrapText(true);
         chatPane.setPrefRowCount(27);
+        chatPane.setMinHeight(getHeight() * 0.5);
         addMessage("System", "Welcome To Chat.");
         right.getChildren().add(chatPane);
 
@@ -66,14 +67,17 @@ public class HomeScene extends BaseScene {
         right.getChildren().add(messageBox);
         message = new TextArea();
         message.setPrefRowCount(3);
+        message.setMinHeight(getHeight() * 0.2);
         sendButton = new Button("Send");
-        sendButton.setPrefSize(100, 100);
+        sendButton.setMinWidth(getWidth() * 0.1);
+        sendButton.setMinHeight(getHeight() * 0.2);
         messageBox.getChildren().add(message);
         messageBox.getChildren().add(sendButton);
 
 
         //video stuff
-        center.setCenter(view);
+        center.setCenter(videoPlayer);
+        videoPlayer.setMaxWidth(center.getMinWidth());
 
         //video controls
         VBox videoControls = new VBox();
