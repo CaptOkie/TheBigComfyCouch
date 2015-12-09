@@ -20,8 +20,7 @@ import javafx.scene.text.Text;
 
 public class HomeScene extends BaseScene {
 
-    private final MenuItem imprt;
-    private final MenuItem testImprt;
+    private final MenuItem loadVideo;
 
     private ListView userListView;
     private ObservableList userList;
@@ -31,10 +30,8 @@ public class HomeScene extends BaseScene {
 //    private final 
     
     public HomeScene(VideoPlayer videoPlayer) {
-        imprt = new MenuItem("Import");
-        fileMenu.getItems().add(imprt);
-        testImprt = new MenuItem("Humble Test");
-        fileMenu.getItems().add(testImprt);
+        loadVideo = new MenuItem("Load Video");
+        fileMenu.getItems().add(loadVideo);
 
         //adding the chat information
 
@@ -88,13 +85,9 @@ public class HomeScene extends BaseScene {
         videoControls.getChildren().add(videoLabel);
         videoControls.setAlignment(Pos.TOP_CENTER);
     }
-    
-    public void setOnImport(EventHandler<ActionEvent> value) {
-        imprt.setOnAction(value);
-    }
 
-    public void setOnHumbleTest(EventHandler<ActionEvent> value) {
-        testImprt.setOnAction(value);
+    public void setOnLoadVideo(EventHandler<ActionEvent> value) {
+        loadVideo.setOnAction(value);
     }
 
     public void setOnSendPressed(EventHandler<ActionEvent> value)

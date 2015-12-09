@@ -8,23 +8,15 @@ public class VideoPlayer extends ImageView {
     private double maxWidth, maxHeight;
     
     public VideoPlayer() {
-        maxWidth = maxHeight = -1.0;
+        setMaxWidth(-1);
+        setMaxHeight(-1);
+        setPreserveRatio(true);
     }
     
     public void play(final Image image) {
         if (image == null) {
             throw new IllegalArgumentException("image is null");
         }
-        
-        double w = image.getWidth(), h = image.getHeight();
-        if (w / (maxWidth / maxHeight) > h) {
-            setFitWidth(maxWidth);
-            setFitHeight(h / (w / maxWidth));
-        } else {
-            setFitHeight(maxHeight);
-            setFitWidth(w / (h / maxHeight));
-        }
-        
         setImage(image);
     }
     
@@ -38,9 +30,11 @@ public class VideoPlayer extends ImageView {
     
     public final void setMaxWidth(double value) {
     	maxWidth = value;
+        setFitWidth(maxWidth);
     }
     
     public final void setMaxHeight(double value) {
     	maxHeight = value;
+        setFitHeight(maxHeight);
     }
 }

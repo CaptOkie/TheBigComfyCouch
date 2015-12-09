@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import couch.cushion.actor.Connection;
 import couch.cushion.media.VideoConverter;
 import couch.cushion.ui.HomeScene;
+import couch.cushion.ui.StartupScene;
 import couch.cushion.ui.VideoPlayer;
 import javafx.application.Application;
 import javafx.stage.FileChooser;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 public class TheBigComfyCouch extends Application {
     
     private static final Path LIBRARY = Paths.get(System.getProperty("user.home"), "couch-library") ;
+    private String username; //the user name of the user
     
     public static void main(String[] args) {
         launch(args);
@@ -32,8 +34,11 @@ public class TheBigComfyCouch extends Application {
         
         Files.createDirectories(LIBRARY);
 
+        //setting a default username
+        username = "DefaultUser";
         // Creating Home scene
         // setting event handler for importing a file
+        StartupScene startup = new StartupScene();
         HomeScene home = new HomeScene(player);
 //        home.setOnImport(e -> {
 //            FileChooser fileChooser = new FileChooser();
@@ -54,36 +59,55 @@ public class TheBigComfyCouch extends Application {
 //            }
 //        });
 
-        home.addUserToList("Test User");
+
 
         home.setOnSendPressed(e -> {
             String message = home.getMessage();
             if(!message.equals("")){
-                home.addMessage("Test User", message);
+                home.addMessage(username, message);
             }
         });
 
-        home.setOnHumbleTest(e -> {
+        home.setOnLoadVideo(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
-                new Thread(() -> {
-                    try {
-                        VideoConverter.playVideo(file.toString(), player);
-                    }
-                    catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                }).start();
+//                new Thread(() -> {
+//                    try {
+//                        VideoConverter.playVideo(file.toString(), player);
+//                    }
+//                    catch (Exception e1) {
+//                        // TODO Auto-generated catch block
+//                        e1.printStackTrace();
+//                    }
+//                }).start();
                 connection.decode(file.toString());
                 connection.play();
             }
         });
+
+        startup.setOnConenctPressed(e -> {
+            String ip = startup.getIPAddress();
+            username = startup.getUsername();
+            if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {
+                //TODO connection stuff
+                home.addUserToList(username);
+                primaryStage.setScene(home);
+            }
+        });
+
+        startup.setOnHostPressed(e -> {
+            username = startup.getUsername();
+            if(!username.equals("")&& !username.equals("Username")) {
+                home.addUserToList(username);
+                primaryStage.setScene(home);
+            }
+            //TODO other host stuff?
+        });
         
         // Displaying the window
-        primaryStage.setScene(home);
+        primaryStage.setScene(startup);
         primaryStage.setOnCloseRequest(e -> {
             connection.terminate();
         });
