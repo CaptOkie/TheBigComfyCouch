@@ -4,16 +4,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
-public class ImageData implements Serializable, Comparable<ImageData> {
+public class ImageData implements Comparable<ImageData> {
 
-    private static final long serialVersionUID = -6672808907294178206L;
-    
-    private transient BufferedImage image;
-    private transient long timestamp;
+    private BufferedImage image;
+    private long timestamp;
     
     protected ImageData() { 
         this(null, 0);
@@ -42,15 +39,5 @@ public class ImageData implements Serializable, Comparable<ImageData> {
             return 1;
         }
         return 0;
-    }
-    
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.writeLong(timestamp);
-        ImageIO.write(getImage(), "png", out);
-    }
-    
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        timestamp = in.readLong();
-        image = ImageIO.read(in);
     }
 }
