@@ -6,6 +6,7 @@ import couch.cushion.actor.message.ChangeUsername;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Connect;
 import couch.cushion.actor.message.Decode;
+import couch.cushion.actor.message.Disconnect;
 import couch.cushion.actor.message.Pause;
 import couch.cushion.actor.message.Play;
 import couch.cushion.ui.HomeScene;

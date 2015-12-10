@@ -14,6 +14,7 @@ import couch.cushion.actor.message.JoinAck;
 import couch.cushion.actor.message.JoinRequest;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Connect;
+import couch.cushion.actor.message.Disconnect;
 import couch.cushion.actor.message.NewMember;
 import couch.cushion.ui.HomeScene;
 import javafx.application.Platform;
@@ -44,6 +45,7 @@ public class ChatActor extends AbstractActor {
                 .match(NewMember.class, msg -> handleNewMember(msg))
                 .match(ChangeUsername.class, msg -> handleChangeUsername(msg))
                 .match(Connect.class, msg -> handleConnect(msg))
+                .match(Disconnect.class, msg -> handleDisconnect(msg))
                 .build());
     }
     
@@ -102,5 +104,17 @@ public class ChatActor extends AbstractActor {
         Platform.runLater(() -> {
             homeScene.addUserToList(newMember.getUsername());
         });
+    }
+    
+    private void handleDisconnect(Disconnect msg) {
+        others.remove(msg.getSelf());
+        homeScene.removeUserFromList(msg.getName());
+    }
+    
+    @Override
+    public void postStop() throws Exception {
+        for (ActorRef other : others) {
+            other.tell(new Disconnect(self(), username), self());
+        }
     }
 }
