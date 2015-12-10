@@ -112,6 +112,7 @@ public class HomeScene extends BaseScene {
 
     public void removeUserFromList(String user) {
         userList.remove(user);
+        userListView.setItems(userList);
     }
 
     public void addMessage(String user, String message)
