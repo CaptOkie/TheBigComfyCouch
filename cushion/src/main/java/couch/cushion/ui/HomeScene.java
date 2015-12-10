@@ -110,6 +110,10 @@ public class HomeScene extends BaseScene {
         userList.add(user);
     }
 
+    public void removeUserFromList(String user) {
+        userList.remove(user);
+    }
+
     public void addMessage(String user, String message)
     {
         chatPane.appendText(user + ":\t\t" + message + "\n");
