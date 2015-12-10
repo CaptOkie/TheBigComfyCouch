@@ -1,6 +1,7 @@
 package couch.cushion;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,7 @@ public class TheBigComfyCouch extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
+        System.setProperty("akka.remote.netty.tcp.hostname", InetAddress.getLocalHost().getHostAddress());
         final VideoPlayer player = new VideoPlayer();
         HomeScene home = new HomeScene(player);
         final Connection connection = new Connection(player, home);
