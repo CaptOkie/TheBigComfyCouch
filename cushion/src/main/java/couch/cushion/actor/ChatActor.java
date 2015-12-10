@@ -40,11 +40,8 @@ public class ChatActor extends AbstractActor {
 //                .match(ChatMessage.class, msg -> this.homeScene.addMessage(msg.getUser(), msg.getMsg()))
                 .match(ChatJoinAck.class, msg -> others.addAll(msg.getOthers()))
                 .match(ChatJoinRequest.class, msg -> acknowledge(msg))
-                .match(ActorIdentity.class, msg -> setOperational(msg))
+//                .match(ActorIdentity.class, msg -> setOperational(msg))
                 .build());
-
-        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.127:2552/user/" + ActorConstants.MASTER_NAME + "/"
-                + ActorConstants.CHAT_ACTOR).tell(new Identify(IDENTIFY_CHAT_ACTOR), self());
     }
     
     private void acknowledge(ChatJoinRequest req) {
@@ -52,13 +49,13 @@ public class ChatActor extends AbstractActor {
         others.add(req.getActor());
     }
     
-    private void setOperational(ActorIdentity msg) {
-        if (IDENTIFY_CHAT_ACTOR.equals(msg.correlationId())) {
-            others.add(msg.getRef());
-            System.out.println("Joined!");
-            msg.getRef().tell(new ChatJoinRequest(self()), self());
-        }
-    }
+//    private void setOperational(ActorIdentity msg) {
+//        if (IDENTIFY_CHAT_ACTOR.equals(msg.correlationId())) {
+//            others.add(msg.getRef());
+//            System.out.println("Joined!");
+//            msg.getRef().tell(new ChatJoinRequest(self()), self());
+//        }
+//    }
     
     private void sendChatMessage(ChatMessage msg) {
         Platform.runLater(() -> {
@@ -70,5 +67,11 @@ public class ChatActor extends AbstractActor {
                 other.tell(msg, self());
             }
         }
+    }
+    
+    @Override
+    public void preStart() throws Exception {
+        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.127:2552/user/" + ActorConstants.MASTER_NAME + "/"
+                + ActorConstants.CHAT_ACTOR).tell(new ChatJoinRequest(self()), self());
     }
 }

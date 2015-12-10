@@ -37,7 +37,7 @@ public class TheBigComfyCouch extends Application {
         Files.createDirectories(LIBRARY);
 
         //setting a default username
-        username = "DefaultUser";
+        username = "The Big Cheese";
         // Creating Home scene
         // setting event handler for importing a file
         StartupScene startup = new StartupScene();
