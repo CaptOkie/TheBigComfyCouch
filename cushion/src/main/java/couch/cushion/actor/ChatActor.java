@@ -67,11 +67,21 @@ public class ChatActor extends AbstractActor {
         }
         this.others.add(req.getActor());
         this.usernames.add(req.getUsername());
+        
+        Platform.runLater(() -> {
+            homeScene.addUserToList(req.getUsername());
+        });
     }
     
     private void handleAck(ChatJoinAck ack) {
         others.addAll(ack.getOthers());
         usernames.addAll(ack.getUsernames());
+        
+        Platform.runLater(() -> {
+            for (final String user : ack.getUsernames()) {
+                homeScene.addUserToList(user);
+            }
+        });
     }
         
     private void sendChatMessage(ChatMessage msg) {
@@ -88,5 +98,9 @@ public class ChatActor extends AbstractActor {
     private void handleNewMember(NewMember newMember) {
         others.add(newMember.getMember());
         usernames.add(newMember.getUsername());
+        
+        Platform.runLater(() -> {
+            homeScene.addUserToList(newMember.getUsername());
+        });
     }
 }
