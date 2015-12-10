@@ -5,14 +5,14 @@ import java.util.Collection;
 
 import akka.actor.ActorRef;
 
-public class ChatJoinAck implements Serializable {
+public class JoinAck implements Serializable {
 
     private static final long serialVersionUID = 6064986037694549623L;
 
     private final Collection<ActorRef> others;
     private final Collection<String> usernames;
     
-    public ChatJoinAck(final Collection<ActorRef> others, final Collection<String> usernames) {
+    public JoinAck(final Collection<ActorRef> others, final Collection<String> usernames) {
         this.others = others;
         this.usernames = usernames;
     }

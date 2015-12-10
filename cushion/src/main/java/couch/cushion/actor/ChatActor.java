@@ -10,8 +10,8 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.actor.message.ChangeUsername;
-import couch.cushion.actor.message.ChatJoinAck;
-import couch.cushion.actor.message.ChatJoinRequest;
+import couch.cushion.actor.message.JoinAck;
+import couch.cushion.actor.message.JoinRequest;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Connect;
 import couch.cushion.actor.message.NewMember;
@@ -39,8 +39,8 @@ public class ChatActor extends AbstractActor {
         
         receive(ReceiveBuilder
                 .match(ChatMessage.class, msg -> sendChatMessage(msg))
-                .match(ChatJoinAck.class, msg -> handleAck(msg))
-                .match(ChatJoinRequest.class, msg -> handleRequest(msg))
+                .match(JoinAck.class, msg -> handleAck(msg))
+                .match(JoinRequest.class, msg -> handleRequest(msg))
                 .match(NewMember.class, msg -> handleNewMember(msg))
                 .match(ChangeUsername.class, msg -> handleChangeUsername(msg))
                 .match(Connect.class, msg -> handleConnect(msg))
@@ -49,19 +49,19 @@ public class ChatActor extends AbstractActor {
     
     private void handleConnect(final Connect connect) {
         getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + ":2552/user/" + ActorConstants.MASTER_NAME + "/"
-              + ActorConstants.CHAT_ACTOR).tell(new ChatJoinRequest(self(), username), self());
+              + ActorConstants.CHAT_ACTOR).tell(new JoinRequest(self(), username), self());
     }
     
     private void handleChangeUsername(final ChangeUsername username) {
         this.username = username.getUsername();
     }
     
-    private void handleRequest(ChatJoinRequest req) {
+    private void handleRequest(JoinRequest req) {
         Collection<ActorRef> others = new ArrayList<>(this.others);
         others.add(self());
         Collection<String> usernames = new ArrayList<>(this.usernames);
         usernames.add(username);
-        req.getActor().tell(new ChatJoinAck(others, usernames), self());
+        req.getActor().tell(new JoinAck(others, usernames), self());
         for (ActorRef other : this.others) {
             other.tell(new NewMember(req.getActor(), req.getUsername()), self());
         }
@@ -73,7 +73,7 @@ public class ChatActor extends AbstractActor {
         });
     }
     
-    private void handleAck(ChatJoinAck ack) {
+    private void handleAck(JoinAck ack) {
         others.addAll(ack.getOthers());
         usernames.addAll(ack.getUsernames());
         

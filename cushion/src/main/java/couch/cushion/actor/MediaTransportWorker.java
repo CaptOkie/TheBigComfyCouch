@@ -22,8 +22,8 @@ import akka.actor.ActorRef;
 import akka.actor.Identify;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
-import couch.cushion.actor.message.ChatJoinAck;
-import couch.cushion.actor.message.ChatJoinRequest;
+import couch.cushion.actor.message.JoinAck;
+import couch.cushion.actor.message.JoinRequest;
 import couch.cushion.actor.message.Connect;
 import couch.cushion.actor.message.FrameRate;
 import couch.cushion.actor.message.NewMember;
@@ -87,8 +87,8 @@ public class MediaTransportWorker extends AbstractActor {
                     .match(Play.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(Pause.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(Connect.class, msg -> handleConnect(msg))
-                    .match(ChatJoinRequest.class, msg -> handleRequest(msg))
-                    .match(ChatJoinAck.class, msg -> handleAck(msg))
+                    .match(JoinRequest.class, msg -> handleRequest(msg))
+                    .match(JoinAck.class, msg -> handleAck(msg))
                     .match(NewMember.class, msg -> handleNewMember(msg))
                     .build());
         }
@@ -96,20 +96,20 @@ public class MediaTransportWorker extends AbstractActor {
 
     private void handleConnect(final Connect connect) {
         getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + "/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME
-                + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance).tell(new ChatJoinRequest(self(), null), self());
+                + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance).tell(new JoinRequest(self(), null), self());
     }
 
-    private void handleRequest(ChatJoinRequest req) {
+    private void handleRequest(JoinRequest req) {
         Collection<ActorRef> others = new ArrayList<>(this.others);
         others.add(self());
-        req.getActor().tell(new ChatJoinAck(others, null), self());
+        req.getActor().tell(new JoinAck(others, null), self());
         for (ActorRef other : this.others) {
             other.tell(new NewMember(req.getActor(), req.getUsername()), self());
         }
         this.others.add(req.getActor());
     }
 
-    private void handleAck(ChatJoinAck ack) {
+    private void handleAck(JoinAck ack) {
         others.addAll(ack.getOthers());
     }
 

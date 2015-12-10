@@ -9,7 +9,6 @@ import couch.cushion.actor.Connection;
 import couch.cushion.actor.message.ChangeUsername;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Connect;
-import couch.cushion.media.VideoConverter;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.ui.StartupScene;
 import couch.cushion.ui.VideoPlayer;
