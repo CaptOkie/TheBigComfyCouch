@@ -50,12 +50,10 @@ public class ChatActor extends AbstractActor {
     private void handleConnect(final Connect connect) {
         getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + ":2552/user/" + ActorConstants.MASTER_NAME + "/"
               + ActorConstants.CHAT_ACTOR).tell(new ChatJoinRequest(self(), username), self());
-        System.out.println("connect set");
     }
     
     private void handleChangeUsername(final ChangeUsername username) {
         this.username = username.getUsername();
-        System.out.println("set username");
     }
     
     private void handleRequest(ChatJoinRequest req) {
