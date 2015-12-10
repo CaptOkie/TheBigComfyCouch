@@ -57,7 +57,7 @@ public class ChatActor extends AbstractActor {
         if (IDENTIFY_CHAT_ACTOR.equals(msg.correlationId())) {
             others.add(msg.getRef());
             System.out.println("Joined!");
-            msg.getRef().tell(msg, self());
+            msg.getRef().tell(new ChatJoinRequest(self()), self());
         }
     }
     
