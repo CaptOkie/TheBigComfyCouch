@@ -26,7 +26,7 @@ public class Master extends AbstractActor {
         
         mediaQueue = getContext().actorOf(MediaQueue.props(player), ActorConstants.MEDIA_QUEUE_NAME);
         mediaDecoder = getContext().actorOf(MediaDecoder.props(), ActorConstants.MEDIA_DECODER_NAME);
-        mediaTransport = getContext().actorOf(MediaTransport.props(), ActorConstants.MEDIA_TRANSPORT_NAME);
+        mediaTransport = getContext().actorOf(MediaTransport.props().withDispatcher("media-transport-dispatcher"), ActorConstants.MEDIA_TRANSPORT_NAME);
         
         receive(
                 ReceiveBuilder.match(Decode.class, msg -> mediaDecoder.tell(msg, self()))

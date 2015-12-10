@@ -107,7 +107,8 @@ public class TheBigComfyCouch extends Application {
         });
         
         // Displaying the window
-        primaryStage.setScene(startup);
+//        primaryStage.setScene(startup);
+        primaryStage.setScene(home);
         primaryStage.setOnCloseRequest(e -> {
             connection.terminate();
         });
