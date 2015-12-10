@@ -108,6 +108,7 @@ public class ChatActor extends AbstractActor {
     
     private void handleDisconnect(Disconnect msg) {
         others.remove(msg.getSelf());
+        usernames.remove(msg.getName());
         homeScene.removeUserFromList(msg.getName());
     }
     
