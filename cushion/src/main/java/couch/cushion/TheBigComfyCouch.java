@@ -2,9 +2,11 @@ package couch.cushion;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 
 import couch.cushion.actor.Connection;
 import couch.cushion.actor.message.ChangeUsername;
@@ -28,7 +30,14 @@ public class TheBigComfyCouch extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        System.setProperty("akka.remote.netty.tcp.hostname", InetAddress.getLocalHost().getHostAddress());
+        final Enumeration<NetworkInterface> ifs = NetworkInterface.getNetworkInterfaces();
+        while (ifs.hasMoreElements()) {
+            final NetworkInterface ni = ifs.nextElement();
+            if (!ni.isLoopback() && !ni.isVirtual() && ni.isUp()) {
+                System.out.println(ni.getInetAddresses().nextElement().getHostAddress());
+                System.setProperty("akka.remote.netty.tcp.hostname", ni.getInetAddresses().nextElement().getHostAddress());                
+            }
+        }
         final VideoPlayer player = new VideoPlayer();
         HomeScene home = new HomeScene(player);
         final Connection connection = new Connection(player, home);
