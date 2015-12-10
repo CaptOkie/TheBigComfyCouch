@@ -74,7 +74,7 @@ public class TheBigComfyCouch extends Application {
         startup.setOnConnectPressed(e -> {
             String ip = startup.getIPAddress();
             username = startup.getUsername();
-            if(!username.equals("") && !ip.equals("")) {
+            if(!username.trim().equals("") && !ip.equals("")) {
 
                 home.addUserToList(username);
                 primaryStage.setScene(home);
@@ -85,7 +85,7 @@ public class TheBigComfyCouch extends Application {
 
         startup.setOnHostPressed(e -> {
             username = startup.getUsername();
-            if(!username.equals("")) {
+            if(!username.trim().equals("")) {
                 connection.changeUsername(new ChangeUsername(null, username));
                 home.addUserToList(username);
                 primaryStage.setScene(home);
