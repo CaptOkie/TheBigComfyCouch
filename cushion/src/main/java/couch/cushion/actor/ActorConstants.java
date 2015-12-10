@@ -7,4 +7,5 @@ class ActorConstants {
     public static final String MEDIA_QUEUE_NAME = "media-queue";
     public static final String MEDIA_TRANSPORT_NAME = "media-transport";
     public static final String MEDIA_TRANSPORT_WORKER_NAME = MEDIA_TRANSPORT_NAME + "-worker";
+    public static final String CHAT_ACTOR = "chat-actor";
 }

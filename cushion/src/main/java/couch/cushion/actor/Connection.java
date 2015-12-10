@@ -5,6 +5,7 @@ import akka.actor.ActorSystem;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.Pause;
 import couch.cushion.actor.message.Play;
+import couch.cushion.ui.HomeScene;
 import couch.cushion.ui.VideoPlayer;
 
 public class Connection {
@@ -12,9 +13,9 @@ public class Connection {
     private final ActorSystem system;
     private final ActorRef master;
     
-    public Connection(final VideoPlayer player) {
+    public Connection(final VideoPlayer player, final HomeScene homeScene) {
         system = ActorSystem.create(ActorConstants.SYSTEM_NAME);
-        master = system.actorOf(Master.props(player), ActorConstants.MASTER_NAME);
+        master = system.actorOf(Master.props(player, homeScene), ActorConstants.MASTER_NAME);
     }
     
     public void pause() {
@@ -31,5 +32,9 @@ public class Connection {
     
     public void terminate() {
         system.terminate();
+    }
+    
+    public void sendMessage(String msg) {
+        master.tell(msg, ActorRef.noSender());
     }
 }

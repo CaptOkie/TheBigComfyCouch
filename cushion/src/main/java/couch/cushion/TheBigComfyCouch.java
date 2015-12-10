@@ -27,7 +27,8 @@ public class TheBigComfyCouch extends Application {
     public void start(Stage primaryStage) throws Exception {
         
         final VideoPlayer player = new VideoPlayer();
-        final Connection connection = new Connection(player);
+        HomeScene home = new HomeScene(player);
+        final Connection connection = new Connection(player, home);
         
         // Setting up main window
         primaryStage.setTitle("The Big Comfy Couch");
@@ -39,7 +40,6 @@ public class TheBigComfyCouch extends Application {
         // Creating Home scene
         // setting event handler for importing a file
         StartupScene startup = new StartupScene();
-        HomeScene home = new HomeScene(player);
 //        home.setOnImport(e -> {
 //            FileChooser fileChooser = new FileChooser();
 //            File file = fileChooser.showOpenDialog(home.getWindow());
@@ -62,7 +62,7 @@ public class TheBigComfyCouch extends Application {
         home.setOnSendPressed(e -> {
             String message = home.getMessage();
             if(!message.equals("")){
-                home.addMessage(username, message);
+                connection.sendMessage(message);
             }
         });
 

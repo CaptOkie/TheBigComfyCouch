@@ -55,6 +55,9 @@ public class Master extends AbstractActor {
                     mediaTransport.tell(msg, self());
                     mediaQueue.tell(msg, self());
                 })
+                .match(String.class, msg -> {
+                    chatActor.tell(msg, self());
+                })
                 .build()
             );
     }
