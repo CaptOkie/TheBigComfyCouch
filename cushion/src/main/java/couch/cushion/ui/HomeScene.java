@@ -128,10 +128,11 @@ public class HomeScene extends BaseScene {
         	Font.font("Arial Black", FontWeight.BOLD, 22));
     }
     
-    public void togglePlaying() {
-    	boolean playing = pausePlayButton.getText() == "►";
+    public boolean togglePlaying() {
+    	boolean playing = pausePlayButton.getText().equals("►");
     	pausePlayButton.setText(playing ? "▐ ▌" : "►");
     	pausePlayButton.setFont(playing ? Font.font("Arial Black", FontWeight.BOLD, 16) :
         	Font.font("Arial Black", FontWeight.BOLD, 22));
+    	return playing;
     }
 }

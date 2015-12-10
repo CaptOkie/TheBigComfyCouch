@@ -93,7 +93,7 @@ public class MediaQueue extends AbstractActor {
         playing = false;
         if (frameTick != null) {
             frameTick.cancel();
-            frameRate = null;
+            frameTick = null;
         }
     }
     
@@ -127,6 +127,5 @@ public class MediaQueue extends AbstractActor {
             frameTick.cancel();
             frameTick = null;
         }
-        super.postStop();
     }
 }

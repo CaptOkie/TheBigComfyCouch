@@ -82,20 +82,25 @@ public class TheBigComfyCouch extends Application {
 //                    }
 //                }).start();
                 connection.decode(file.toString());
-                connection.play();
-                home.setPlaying(true);
+//                connection.play();
+                home.setPlaying(false);
             }
         });
         
         home.setOnPausePlayPressed(e -> {
         	// TODO toggle pause play
-            home.togglePlaying();
+            if (home.togglePlaying()) {
+                connection.play();
+            }
+            else {
+                connection.pause();
+            }
         });
 
         startup.setOnConnectPressed(e -> {
             String ip = startup.getIPAddress();
             username = startup.getUsername();
-            if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {
+            if(!username.equals("") && !ip.equals("")) {
                 //TODO connection stuff
                 home.addUserToList(username);
                 primaryStage.setScene(home);
@@ -104,7 +109,7 @@ public class TheBigComfyCouch extends Application {
 
         startup.setOnHostPressed(e -> {
             username = startup.getUsername();
-            if(!username.equals("")&& !username.equals("Username")) {
+            if(!username.equals("")) {
                 home.addUserToList(username);
                 primaryStage.setScene(home);
             }
@@ -112,8 +117,8 @@ public class TheBigComfyCouch extends Application {
         });
         
         // Displaying the window
-//        primaryStage.setScene(startup);
-        primaryStage.setScene(home);
+        primaryStage.setScene(startup);
+//        primaryStage.setScene(home);
         primaryStage.setOnCloseRequest(e -> {
             connection.terminate();
         });
