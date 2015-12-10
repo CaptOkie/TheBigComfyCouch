@@ -1,5 +1,6 @@
 package couch.cushion.actor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -45,7 +46,7 @@ public class ChatActor extends AbstractActor {
     }
     
     private void acknowledge(ChatJoinRequest req) {
-        req.getActor().tell(new ChatJoinAck(others), self());
+        req.getActor().tell(new ChatJoinAck(new ArrayList<>(others)), self());
         others.add(req.getActor());
     }
     
