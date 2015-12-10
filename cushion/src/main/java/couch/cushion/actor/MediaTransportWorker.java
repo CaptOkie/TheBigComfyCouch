@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +22,11 @@ import akka.actor.ActorRef;
 import akka.actor.Identify;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
+import couch.cushion.actor.message.ChatJoinAck;
+import couch.cushion.actor.message.ChatJoinRequest;
+import couch.cushion.actor.message.Connect;
 import couch.cushion.actor.message.FrameRate;
+import couch.cushion.actor.message.NewMember;
 import couch.cushion.actor.message.Pause;
 import couch.cushion.actor.message.Play;
 import couch.cushion.media.AudioData;
@@ -34,7 +39,6 @@ public class MediaTransportWorker extends AbstractActor {
     
     private static final UUID IDENTIFY_MEDIA_DECODER_ID = UUID.randomUUID();
     private static final UUID IDENTIFY_MEDIA_QUEUE_ID = UUID.randomUUID();
-    private static final UUID IDENTIFY_MEDIA_TRANSPORT_WORKER_ID = UUID.randomUUID();
     
     private final int instance;
     
@@ -82,19 +86,37 @@ public class MediaTransportWorker extends AbstractActor {
                     .match(FrameRate.class, msg -> handleCommon(msg, mediaQueue))
                     .match(Play.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
                     .match(Pause.class, msg -> handleCommon(msg, mediaQueue, mediaDecoder))
-                    .match(ActorIdentity.class, msg -> {
-                        if (IDENTIFY_MEDIA_TRANSPORT_WORKER_ID.equals(msg.correlationId())) {
-                            others.add(msg.getRef());
-                            System.out.println(instance + " READY!!!");
-                        }
-                    })
+                    .match(Connect.class, msg -> handleConnect(msg))
+                    .match(ChatJoinRequest.class, msg -> handleRequest(msg))
+                    .match(ChatJoinAck.class, msg -> handleAck(msg))
+                    .match(NewMember.class, msg -> handleNewMember(msg))
                     .build());
-//            getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.126:2552/user/" + ActorConstants.MASTER_NAME
-//                    + "/" + ActorConstants.MEDIA_TRANSPORT_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance)
-//                .tell(new Identify(IDENTIFY_MEDIA_TRANSPORT_WORKER_ID), self());
         }
     }
-    
+
+    private void handleConnect(final Connect connect) {
+        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + "/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME
+                + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance).tell(new ChatJoinRequest(self(), null), self());
+    }
+
+    private void handleRequest(ChatJoinRequest req) {
+        Collection<ActorRef> others = new ArrayList<>(this.others);
+        others.add(self());
+        req.getActor().tell(new ChatJoinAck(others, null), self());
+        for (ActorRef other : this.others) {
+            other.tell(new NewMember(req.getActor(), req.getUsername()), self());
+        }
+        this.others.add(req.getActor());
+    }
+
+    private void handleAck(ChatJoinAck ack) {
+        others.addAll(ack.getOthers());
+    }
+
+    private void handleNewMember(NewMember newMember) {
+        others.add(newMember.getMember());
+    }
+
     private void handleCommon(final Serializable obj, final ActorRef... locals) {
         if (sender().equals(getContext().parent())) {
             for (final ActorRef ref : others) {
