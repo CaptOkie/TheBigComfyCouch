@@ -3,14 +3,10 @@ package couch.cushion.actor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
-import java.util.UUID;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorIdentity;
 import akka.actor.ActorRef;
-import akka.actor.Identify;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.actor.message.ChatJoinAck;
@@ -21,8 +17,6 @@ import couch.cushion.ui.HomeScene;
 import javafx.application.Platform;
 
 public class ChatActor extends AbstractActor {
-    
-    private static final UUID IDENTIFY_CHAT_ACTOR = UUID.randomUUID();
     
     private final HomeScene homeScene;
     
@@ -64,7 +58,6 @@ public class ChatActor extends AbstractActor {
             this.homeScene.addMessage(msg.getUser(), msg.getMsg());
         });
         if (getContext().parent().equals(sender())) {
-            System.out.println(msg);
             for (ActorRef other : others) {
                 other.tell(msg, self());
             }
