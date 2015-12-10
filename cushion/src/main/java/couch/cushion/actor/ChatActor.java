@@ -38,26 +38,22 @@ public class ChatActor extends AbstractActor {
         
         receive(ReceiveBuilder
                 .match(ChatMessage.class, msg -> sendChatMessage(msg))
-//                .match(ChatMessage.class, msg -> this.homeScene.addMessage(msg.getUser(), msg.getMsg()))
-                .match(ChatJoinAck.class, msg -> others.addAll(msg.getOthers()))
-                .match(ChatJoinRequest.class, msg -> acknowledge(msg))
-//                .match(ActorIdentity.class, msg -> setOperational(msg))
+                .match(ChatJoinAck.class, msg -> handleAck(msg))
+                .match(ChatJoinRequest.class, msg -> handleRequest(msg))
                 .build());
     }
     
-    private void acknowledge(ChatJoinRequest req) {
-        req.getActor().tell(new ChatJoinAck(new ArrayList<>(others)), self());
-        others.add(req.getActor());
+    private void handleRequest(ChatJoinRequest req) {
+        Collection<ActorRef> others = new ArrayList<>(this.others);
+        others.add(self());
+        req.getActor().tell(new ChatJoinAck(others), self());
+        this.others.add(req.getActor());
     }
     
-//    private void setOperational(ActorIdentity msg) {
-//        if (IDENTIFY_CHAT_ACTOR.equals(msg.correlationId())) {
-//            others.add(msg.getRef());
-//            System.out.println("Joined!");
-//            msg.getRef().tell(new ChatJoinRequest(self()), self());
-//        }
-//    }
-    
+    private void handleAck(ChatJoinAck ack) {
+        others.addAll(ack.getOthers());
+    }
+        
     private void sendChatMessage(ChatMessage msg) {
         Platform.runLater(() -> {
             this.homeScene.addMessage(msg.getUser(), msg.getMsg());
