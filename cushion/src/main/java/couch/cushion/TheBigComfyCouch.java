@@ -61,7 +61,7 @@ public class TheBigComfyCouch extends Application {
         });
         
         home.setOnPausePlayPressed(e -> {
-        	// TODO toggle pause play
+
             if (home.togglePlaying()) {
                 connection.play();
             }
@@ -89,7 +89,6 @@ public class TheBigComfyCouch extends Application {
                 home.addUserToList(username);
                 primaryStage.setScene(home);
             }
-            //TODO other host stuff?
         });
         
         // Displaying the window
