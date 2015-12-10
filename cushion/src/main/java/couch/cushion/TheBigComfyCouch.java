@@ -59,8 +59,6 @@ public class TheBigComfyCouch extends Application {
 //            }
 //        });
 
-
-
         home.setOnSendPressed(e -> {
             String message = home.getMessage();
             if(!message.equals("")){
@@ -84,10 +82,16 @@ public class TheBigComfyCouch extends Application {
 //                }).start();
                 connection.decode(file.toString());
                 connection.play();
+                home.setPlaying(true);
             }
         });
+        
+        home.setOnPausePlayPressed(e -> {
+        	// TODO toggle pause play
+            home.togglePlaying();
+        });
 
-        startup.setOnConenctPressed(e -> {
+        startup.setOnConnectPressed(e -> {
             String ip = startup.getIPAddress();
             username = startup.getUsername();
             if(!username.equals("") && !username.equals("Username") && !ip.equals("") && !ip.equals("IP Address")) {

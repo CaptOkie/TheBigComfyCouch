@@ -27,6 +27,7 @@ public class HomeScene extends BaseScene {
     private TextArea chatPane;
     private TextArea message;
     private Button sendButton;
+    private Button pausePlayButton;
 //    private final 
     
     public HomeScene(VideoPlayer videoPlayer) {
@@ -81,8 +82,13 @@ public class HomeScene extends BaseScene {
         //video controls
         VBox videoControls = new VBox();
         center.setBottom(videoControls);
-        Text videoLabel = new Text("Video Controls");
-        videoControls.getChildren().add(videoLabel);
+        pausePlayButton = new Button("►");
+        pausePlayButton.setFont(Font.font("Arial Black", FontWeight.BOLD, 20));
+        pausePlayButton.setMinWidth(getHeight() * 0.1);
+        pausePlayButton.setMinHeight(getHeight() * 0.1);
+        pausePlayButton.setPrefWidth(getHeight() * 0.1);
+        pausePlayButton.setPrefHeight(getHeight() * 0.1);
+        videoControls.getChildren().add(pausePlayButton);
         videoControls.setAlignment(Pos.TOP_CENTER);
     }
 
@@ -93,6 +99,10 @@ public class HomeScene extends BaseScene {
     public void setOnSendPressed(EventHandler<ActionEvent> value)
     {
         sendButton.setOnAction(value);
+    }
+    
+    public void setOnPausePlayPressed(EventHandler<ActionEvent> value) {
+    	pausePlayButton.setOnAction(value);
     }
 
     public void addUserToList(String user)
@@ -110,5 +120,18 @@ public class HomeScene extends BaseScene {
         String toSend =  message.getText();
         message.clear();
         return toSend;
+    }
+    
+    public void setPlaying(boolean playing) {
+    	pausePlayButton.setText(playing ? "▐ ▌" : "►");
+    	pausePlayButton.setFont(playing ? Font.font("Arial Black", FontWeight.BOLD, 16) :
+        	Font.font("Arial Black", FontWeight.BOLD, 22));
+    }
+    
+    public void togglePlaying() {
+    	boolean playing = pausePlayButton.getText() == "►";
+    	pausePlayButton.setText(playing ? "▐ ▌" : "►");
+    	pausePlayButton.setFont(playing ? Font.font("Arial Black", FontWeight.BOLD, 16) :
+        	Font.font("Arial Black", FontWeight.BOLD, 22));
     }
 }
