@@ -34,8 +34,15 @@ public class TheBigComfyCouch extends Application {
         while (ifs.hasMoreElements()) {
             final NetworkInterface ni = ifs.nextElement();
             if (!ni.isLoopback() && !ni.isVirtual() && ni.isUp()) {
-                System.out.println(ni.getInetAddresses().nextElement().getHostAddress());
-                System.setProperty("akka.remote.netty.tcp.hostname", ni.getInetAddresses().nextElement().getHostAddress());                
+                final Enumeration<InetAddress> inets = ni.getInetAddresses();
+                while (inets.hasMoreElements()) {
+                    final InetAddress addr = inets.nextElement();
+                    if (!addr.isLinkLocalAddress()) {
+                        System.setProperty("akka.remote.netty.tcp.hostname", addr.getHostAddress());                
+                    }
+                    break;
+                }
+                break;
             }
         }
         final VideoPlayer player = new VideoPlayer();
