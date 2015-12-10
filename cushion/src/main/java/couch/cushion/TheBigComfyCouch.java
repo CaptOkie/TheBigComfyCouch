@@ -39,8 +39,8 @@ public class TheBigComfyCouch extends Application {
                     final InetAddress addr = inets.nextElement();
                     if (!addr.isLinkLocalAddress()) {
                         System.setProperty("akka.remote.netty.tcp.hostname", addr.getHostAddress());                
+                        break;
                     }
-                    break;
                 }
                 break;
             }
