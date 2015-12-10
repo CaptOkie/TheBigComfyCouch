@@ -16,6 +16,7 @@ import couch.cushion.actor.message.ChatJoinAck;
 import couch.cushion.actor.message.ChatJoinRequest;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.ui.HomeScene;
+import javafx.application.Platform;
 
 public class ChatActor extends AbstractActor {
     
@@ -62,9 +63,13 @@ public class ChatActor extends AbstractActor {
     }
     
     private void sendChatMessage(String msg) {
-        this.homeScene.addMessage(user, msg);
-        for (ActorRef other : others) {
-            other.tell(new ChatMessage(user, msg), self());
+        Platform.runLater(() -> {
+            this.homeScene.addMessage(user, msg);
+        });
+        if (getContext().parent().equals(sender())) {
+            for (ActorRef other : others) {
+                other.tell(new ChatMessage(user, msg), self());
+            }
         }
     }
 }
