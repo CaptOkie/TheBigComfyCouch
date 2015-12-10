@@ -49,8 +49,10 @@ public class ChatActor extends AbstractActor {
         Collection<ActorRef> others = new ArrayList<>(this.others);
         others.add(self());
         req.getActor().tell(new ChatJoinAck(others), self());
+        for (ActorRef other : this.others) {
+            other.tell(new NewMember(req.getActor()), self());
+        }
         this.others.add(req.getActor());
-        req.getActor().tell(new NewMember(req.getActor()), self());
     }
     
     private void handleAck(ChatJoinAck ack) {
