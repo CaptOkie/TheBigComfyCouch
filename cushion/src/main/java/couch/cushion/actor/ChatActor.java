@@ -1,7 +1,9 @@
 package couch.cushion.actor;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.UUID;
 
 import akka.actor.AbstractActor;
@@ -10,6 +12,8 @@ import akka.actor.ActorRef;
 import akka.actor.Identify;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
+import couch.cushion.actor.message.ChatJoinAck;
+import couch.cushion.actor.message.ChatJoinRequest;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.ui.HomeScene;
 
@@ -20,7 +24,7 @@ public class ChatActor extends AbstractActor {
     private final HomeScene homeScene;
     private final String user;
     
-    private Collection<ActorRef> others;
+    private Set<ActorRef> others;
     
     public static Props props(HomeScene homeScene) {
         return Props.create(ChatActor.class, () -> new ChatActor(homeScene));
@@ -30,11 +34,13 @@ public class ChatActor extends AbstractActor {
         this.homeScene = homeScene;
         user = "Me";
         
-        others = new LinkedList<>(); 
+        others = new HashSet<>(); 
         
         receive(ReceiveBuilder
                 .match(String.class, msg -> sendChatMessage(msg))
                 .match(ChatMessage.class, msg -> this.homeScene.addMessage(msg.getUser(), msg.getMsg()))
+                .match(ChatJoinAck.class, msg -> others.addAll(msg.getOthers()))
+                .match(ChatJoinRequest.class, msg -> acknowledge(msg))
                 .match(ActorIdentity.class, msg -> setOperational(msg))
                 .build());
 
@@ -42,10 +48,15 @@ public class ChatActor extends AbstractActor {
 //                + ActorConstants.CHAT_ACTOR).tell(new Identify(IDENTIFY_CHAT_ACTOR), self());
     }
     
+    private void acknowledge(ChatJoinRequest req) {
+        req.getActor().tell(new ChatJoinAck(others), self());
+    }
+    
     private void setOperational(ActorIdentity msg) {
         if (IDENTIFY_CHAT_ACTOR.equals(msg.correlationId())) {
             others.add(msg.getRef());
             System.out.println("Joined!");
+            msg.getRef().tell(msg, self());
         }
     }
     
