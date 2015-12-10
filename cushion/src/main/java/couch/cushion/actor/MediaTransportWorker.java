@@ -75,6 +75,7 @@ public class MediaTransportWorker extends AbstractActor {
         }
 
         if (mediaQueue != null && mediaDecoder != null) {
+            others.add(self());
             getContext().become(ReceiveBuilder
                     .match(ImageSegment.class, msg -> build(msg))
                     .match(ImageData.class, msg -> breakDown(msg))

@@ -32,25 +32,25 @@ public class Master extends AbstractActor {
                 ReceiveBuilder.match(Decode.class, msg -> mediaDecoder.tell(msg, self()))
                 .match(Play.class, msg -> {
                     mediaTransport.tell(msg, self());
-                    mediaQueue.tell(msg, self());
-                    mediaDecoder.tell(msg, self());
+//                    mediaQueue.tell(msg, self());
+//                    mediaDecoder.tell(msg, self());
                 })
                 .match(Pause.class, msg -> {
                     mediaTransport.tell(msg, self());
-                    mediaQueue.tell(msg, self());
-                    mediaDecoder.tell(msg, self());
+//                    mediaQueue.tell(msg, self());
+//                    mediaDecoder.tell(msg, self());
                 })
                 .match(ImageData.class, msg -> {
                     mediaTransport.tell(msg, self());
-                    mediaQueue.tell(msg, self());
+//                    mediaQueue.tell(msg, self());
                 })
                 .match(AudioData.class, msg -> {
                     mediaTransport.tell(msg, self());
-                    mediaQueue.tell(msg, self());
+//                    mediaQueue.tell(msg, self());
                 })
                 .match(FrameRate.class, msg -> {
                     mediaTransport.tell(msg, self());
-                    mediaQueue.tell(msg, self());
+//                    mediaQueue.tell(msg, self());
                 })
                 .build()
             );
