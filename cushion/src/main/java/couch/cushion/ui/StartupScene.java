@@ -44,7 +44,7 @@ public class StartupScene extends BaseScene {
 
     }
 
-    public void setOnConenctPressed(EventHandler<ActionEvent> value) {
+    public void setOnConnectPressed(EventHandler<ActionEvent> value) {
         connectButton.setOnAction(value);
     }
 
