@@ -44,12 +44,13 @@ public class ChatActor extends AbstractActor {
                 .match(ActorIdentity.class, msg -> setOperational(msg))
                 .build());
 
-//        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.127:2552/user/" + ActorConstants.MASTER_NAME + "/"
-//                + ActorConstants.CHAT_ACTOR).tell(new Identify(IDENTIFY_CHAT_ACTOR), self());
+        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@192.168.1.127:2552/user/" + ActorConstants.MASTER_NAME + "/"
+                + ActorConstants.CHAT_ACTOR).tell(new Identify(IDENTIFY_CHAT_ACTOR), self());
     }
     
     private void acknowledge(ChatJoinRequest req) {
         req.getActor().tell(new ChatJoinAck(others), self());
+        others.add(req.getActor());
     }
     
     private void setOperational(ActorIdentity msg) {
