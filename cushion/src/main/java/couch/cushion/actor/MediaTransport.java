@@ -8,6 +8,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
+import couch.cushion.actor.message.Connect;
 
 public class MediaTransport extends AbstractActor {
 
@@ -28,7 +29,13 @@ public class MediaTransport extends AbstractActor {
         }
         current = workers.iterator();
         
-        receive(ReceiveBuilder.matchAny(msg -> handleMsg(msg)).build());
+        receive(ReceiveBuilder
+                .match(Connect.class, msg -> {
+                    for (final ActorRef ref : workers) {
+                        ref.tell(msg, self());
+                    }
+                })
+                .matchAny(msg -> handleMsg(msg)).build());
     }
     
     private void handleMsg(final Object msg) {

@@ -42,24 +42,6 @@ public class TheBigComfyCouch extends Application {
         // Creating Home scene
         // setting event handler for importing a file
         StartupScene startup = new StartupScene();
-//        home.setOnImport(e -> {
-//            FileChooser fileChooser = new FileChooser();
-//            File file = fileChooser.showOpenDialog(home.getWindow());
-//            if(file != null) {
-//                try {
-//                    Path src = LIBRARY.resolve(file.getAbsolutePath());
-//                    Path dst = LIBRARY.resolve(com.google.common.io.Files.getNameWithoutExtension(src.getFileName().toString()) + ".mp4");
-////                    Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
-//                    
-//                    VideoConverter converter = new VideoConverter("MP4");
-//                    converter.convert(src.toUri().toURL(), dst.toUri().toURL());
-//                }
-//                catch (Exception e1) {
-//                    // TODO Auto-generated catch block
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });
 
         home.setOnSendPressed(e -> {
             String message = home.getMessage();
@@ -73,17 +55,7 @@ public class TheBigComfyCouch extends Application {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             File file = fileChooser.showOpenDialog(home.getWindow());
             if (file != null) {
-//                new Thread(() -> {
-//                    try {
-//                        VideoConverter.playVideo(file.toString(), player);
-//                    }
-//                    catch (Exception e1) {
-//                        // TODO Auto-generated catch block
-//                        e1.printStackTrace();
-//                    }
-//                }).start();
                 connection.decode(file.toString());
-//                connection.play();
                 home.setPlaying(false);
             }
         });
