@@ -3,7 +3,9 @@ package couch.cushion.actor;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.io.Tcp.Connect;
 import akka.japi.pf.ReceiveBuilder;
+import couch.cushion.actor.message.ChangeUsername;
 import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.FrameRate;
@@ -57,6 +59,12 @@ public class Master extends AbstractActor {
                     mediaQueue.tell(msg, self());
                 })
                 .match(ChatMessage.class, msg -> {
+                    chatActor.tell(msg, self());
+                })
+                .match(ChangeUsername.class, msg -> {
+                    chatActor.tell(msg, self());
+                })
+                .match(Connect.class, msg -> {
                     chatActor.tell(msg, self());
                 })
                 .build()

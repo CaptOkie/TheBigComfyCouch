@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import couch.cushion.actor.Connection;
+import couch.cushion.actor.message.ChangeUsername;
 import couch.cushion.actor.message.ChatMessage;
+import couch.cushion.actor.message.Connect;
 import couch.cushion.media.VideoConverter;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.ui.StartupScene;
@@ -101,15 +103,18 @@ public class TheBigComfyCouch extends Application {
             String ip = startup.getIPAddress();
             username = startup.getUsername();
             if(!username.equals("") && !ip.equals("")) {
-                //TODO connection stuff
+
                 home.addUserToList(username);
                 primaryStage.setScene(home);
+                connection.changeUsername(new ChangeUsername(null, username));
+                connection.connect(new Connect(ip));
             }
         });
 
         startup.setOnHostPressed(e -> {
             username = startup.getUsername();
             if(!username.equals("")) {
+                connection.changeUsername(new ChangeUsername(null, username));
                 home.addUserToList(username);
                 primaryStage.setScene(home);
             }
