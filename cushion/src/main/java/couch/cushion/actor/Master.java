@@ -4,6 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
+import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.FrameRate;
 import couch.cushion.actor.message.Pause;
@@ -55,7 +56,7 @@ public class Master extends AbstractActor {
                     mediaTransport.tell(msg, self());
                     mediaQueue.tell(msg, self());
                 })
-                .match(String.class, msg -> {
+                .match(ChatMessage.class, msg -> {
                     chatActor.tell(msg, self());
                 })
                 .build()

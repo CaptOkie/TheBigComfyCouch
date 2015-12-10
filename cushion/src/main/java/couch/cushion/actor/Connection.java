@@ -2,6 +2,7 @@ package couch.cushion.actor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.actor.message.Decode;
 import couch.cushion.actor.message.Pause;
 import couch.cushion.actor.message.Play;
@@ -34,7 +35,7 @@ public class Connection {
         system.terminate();
     }
     
-    public void sendMessage(String msg) {
+    public void sendMessage(ChatMessage msg) {
         master.tell(msg, ActorRef.noSender());
     }
 }

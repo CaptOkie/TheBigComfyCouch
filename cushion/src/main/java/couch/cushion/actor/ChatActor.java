@@ -23,7 +23,6 @@ public class ChatActor extends AbstractActor {
     private static final UUID IDENTIFY_CHAT_ACTOR = UUID.randomUUID();
     
     private final HomeScene homeScene;
-    private final String user;
     
     private Set<ActorRef> others;
     
@@ -33,13 +32,12 @@ public class ChatActor extends AbstractActor {
     
     private ChatActor(HomeScene homeScene) {
         this.homeScene = homeScene;
-        user = "Me";
-        
+
         others = new HashSet<>(); 
         
         receive(ReceiveBuilder
-                .match(String.class, msg -> sendChatMessage(msg))
-                .match(ChatMessage.class, msg -> this.homeScene.addMessage(msg.getUser(), msg.getMsg()))
+                .match(ChatMessage.class, msg -> sendChatMessage(msg))
+//                .match(ChatMessage.class, msg -> this.homeScene.addMessage(msg.getUser(), msg.getMsg()))
                 .match(ChatJoinAck.class, msg -> others.addAll(msg.getOthers()))
                 .match(ChatJoinRequest.class, msg -> acknowledge(msg))
                 .match(ActorIdentity.class, msg -> setOperational(msg))
@@ -62,13 +60,14 @@ public class ChatActor extends AbstractActor {
         }
     }
     
-    private void sendChatMessage(String msg) {
+    private void sendChatMessage(ChatMessage msg) {
         Platform.runLater(() -> {
-            this.homeScene.addMessage(user, msg);
+            this.homeScene.addMessage(msg.getUser(), msg.getMsg());
         });
         if (getContext().parent().equals(sender())) {
+            System.out.println(msg);
             for (ActorRef other : others) {
-                other.tell(new ChatMessage(user, msg), self());
+                other.tell(msg, self());
             }
         }
     }

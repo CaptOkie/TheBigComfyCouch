@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import couch.cushion.actor.Connection;
+import couch.cushion.actor.message.ChatMessage;
 import couch.cushion.media.VideoConverter;
 import couch.cushion.ui.HomeScene;
 import couch.cushion.ui.StartupScene;
@@ -62,7 +63,7 @@ public class TheBigComfyCouch extends Application {
         home.setOnSendPressed(e -> {
             String message = home.getMessage();
             if(!message.equals("")){
-                connection.sendMessage(message);
+                connection.sendMessage(new ChatMessage(username, message));
             }
         });
 
