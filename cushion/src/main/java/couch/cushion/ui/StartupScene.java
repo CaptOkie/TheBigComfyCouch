@@ -6,10 +6,9 @@ package couch.cushion.ui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -29,8 +28,10 @@ public class StartupScene extends BaseScene {
         vbox.setAlignment(Pos.CENTER);
         HBox buttonBox = new HBox();
         vbox.getChildren().addAll(fieldBox, buttonBox);
-        nameField = new TextField("Username");
-        ipField = new TextField("IP Address");
+        nameField = new TextField();
+        nameField.setPromptText("Username");
+        ipField = new TextField();
+        ipField.setPromptText("Ip Address");
 
         connectButton = new Button("Connect to IP");
         hostButton = new Button("Start new Session");
