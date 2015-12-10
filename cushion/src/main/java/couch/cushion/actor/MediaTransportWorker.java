@@ -95,7 +95,7 @@ public class MediaTransportWorker extends AbstractActor {
     }
 
     private void handleConnect(final Connect connect) {
-        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + "/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME
+        getContext().actorSelection("akka.tcp://" + ActorConstants.SYSTEM_NAME + "@" + connect.getIp() + ":2552/user/" + ActorConstants.MASTER_NAME + "/" + ActorConstants.MEDIA_TRANSPORT_NAME
                 + "/" + ActorConstants.MEDIA_TRANSPORT_WORKER_NAME + "-" + instance).tell(new JoinRequest(self(), null), self());
     }
 
