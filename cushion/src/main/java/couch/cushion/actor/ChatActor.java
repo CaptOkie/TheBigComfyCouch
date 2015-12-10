@@ -16,6 +16,7 @@ import akka.japi.pf.ReceiveBuilder;
 import couch.cushion.actor.message.ChatJoinAck;
 import couch.cushion.actor.message.ChatJoinRequest;
 import couch.cushion.actor.message.ChatMessage;
+import couch.cushion.actor.message.NewMember;
 import couch.cushion.ui.HomeScene;
 import javafx.application.Platform;
 
@@ -40,6 +41,7 @@ public class ChatActor extends AbstractActor {
                 .match(ChatMessage.class, msg -> sendChatMessage(msg))
                 .match(ChatJoinAck.class, msg -> handleAck(msg))
                 .match(ChatJoinRequest.class, msg -> handleRequest(msg))
+                .match(NewMember.class, msg -> handleNewMember(msg))
                 .build());
     }
     
@@ -48,6 +50,7 @@ public class ChatActor extends AbstractActor {
         others.add(self());
         req.getActor().tell(new ChatJoinAck(others), self());
         this.others.add(req.getActor());
+        req.getActor().tell(new NewMember(req.getActor()), self());
     }
     
     private void handleAck(ChatJoinAck ack) {
@@ -64,6 +67,10 @@ public class ChatActor extends AbstractActor {
                 other.tell(msg, self());
             }
         }
+    }
+    
+    private void handleNewMember(NewMember newMember) {
+        others.add(newMember.getMember());
     }
     
     @Override
